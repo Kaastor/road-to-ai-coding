@@ -1,0 +1,5 @@
+- autopep8
+- Python Debugger
+- Python Environments
+- Pylance
+- Python
