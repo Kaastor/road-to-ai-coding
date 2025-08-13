@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "ms-vscode.vscode-js-profile-table",
+    "ms-python.python",
+    "ms-azuretools.vscode-docker",
+    "editorconfig.editorconfig"
+  ]
+}

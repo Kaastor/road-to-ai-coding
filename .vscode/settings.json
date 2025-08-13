@@ -1,0 +1,12 @@
+{
+  "editor.inlineSuggest.enabled": true,
+  "github.copilot.enable": { "*": true },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "testing.automaticallyOpenPeekView": "never",
+  "workbench.editor.enablePreview": false
+}
