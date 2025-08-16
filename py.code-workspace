@@ -1,5 +1,5 @@
 {
-  "folders": [{ "path": "./training/python" }],
+  "folders": [{ "path": "./training/python-apps" }],
   "settings": {
     // pick your venv once via the interpreter selector,
     // or hardcode it if you prefer:

@@ -6,7 +6,7 @@
 # Python
 **/__pycache__/
 **/.pytest_cache/
-training/python/**/.venv/
+training/python/.venv/
 
 # Common
 .env
