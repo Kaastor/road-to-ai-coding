@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "dotnet build", "type": "shell", "command": "dotnet build", "group": "build", "problemMatcher": "$msCompile" },
+    { "label": "dotnet test",  "type": "shell", "command": "dotnet test" },
+
+    { "label": "dotnet build HelloWorld", "type": "shell", "command": "dotnet build HelloConsole/HelloConsole.csproj", "group": "build", "problemMatcher": "$msCompile" },
+    { "label": "dotnet test HelloWorld",  "type": "shell", "command": "dotnet test tests/HelloConsole.Tests/HelloConsole.Tests.csproj" }
+    
+  ]
+}

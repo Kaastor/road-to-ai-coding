@@ -1,1 +1,13 @@
 ./venv
+# .NET
+**/bin/
+**/obj/
+
+# Python
+**/__pycache__/
+**/.pytest_cache/
+training/python/**/.venv/
+
+# Common
+.env
+gen
