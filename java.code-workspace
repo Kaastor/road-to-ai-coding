@@ -1,14 +1,28 @@
 {
-  "folders": [{ "path": "./training/java-apps" }],
+  "folders": [
+    { "path": "./training/java-apps" }
+  ],
   "settings": {
-    // pick your venv once via the interpreter selector,
-    // or hardcode it if you prefer:
-    // macOS/Linux:
-    // "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-    // Windows:
-    // "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    // Use your installed JDK (set JAVA_HOME on your machine)
+    "java.configuration.runtimes": [
+      { "name": "JavaSE-17", "path": "${env:JAVA_HOME}" }
+    ],
+    // Keep Maven/Gradle config in sync automatically
+    "java.configuration.updateBuildConfiguration": "automatic",
+
+    // Testing UX
+    "java.test.report.showAfterExecution": "onFailure",
+
+    // Tidy view
+    "files.exclude": {
+      "**/target/": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "vscjava.vscode-java-pack",
+      "vscjava.vscode-java-test",
+      "vscjava.vscode-maven"
+    ]
   }
 }
