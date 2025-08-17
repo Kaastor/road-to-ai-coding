@@ -60,15 +60,6 @@
       { "label": "mvn run (hello-console)", "type": "shell",
         "command": "mvn -f ${workspaceFolder:java}/hello-console/pom.xml exec:java",
         "presentation": { "reveal": "always", "panel": "shared", "clear": true }
-      },
-      { "label": "mvn test (calc-cli)", "type": "shell",
-        "command": "mvn -f ${workspaceFolder:java}/calc-cli/pom.xml test",
-        "group": "test",
-        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
-      },
-      { "label": "mvn run (calc-cli add 2 3)", "type": "shell",
-        "command": "mvn -f ${workspaceFolder:java}/calc-cli/pom.xml exec:java -Dexec.args=\"add 2 3\"",
-        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
       }
     ]
   },
@@ -105,16 +96,6 @@
         "mainClass": "com.example.hello.Hello",
         "projectName": "hello-console",
         "preLaunchTask": "mvn test (hello-console)",
-        "console": "integratedTerminal"
-      },
-      {
-        "type": "java",
-        "name": "Java: calc-cli (add 2 3)",
-        "request": "launch",
-        "mainClass": "com.example.calc.Main",
-        "projectName": "calc-cli",
-        "args": ["add", "2", "3"],
-        "preLaunchTask": "mvn test (calc-cli)",
         "console": "integratedTerminal"
       }
     ],
