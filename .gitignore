@@ -21,3 +21,6 @@ gen
 .idea/
 *.iml
 .fake
+
+**/node_modules/
+**/dist/

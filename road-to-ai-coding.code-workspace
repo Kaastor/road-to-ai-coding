@@ -35,20 +35,20 @@
 
       // ---------- Python (example app: helloworld) ----------
       {
-      "label": "Run: helloworld",
-      "type": "process",
-      "command": "${config:python.defaultInterpreterPath}",
-      "args": ["-m", "helloworld"],
-      "problemMatcher": [],
-      "linux":   { "command": "${workspaceFolder}/.venv/bin/python3.13" },
-      },
-      {
-        "label": "pytest: all",
+        "label": "Run: helloworld",
         "type": "process",
         "command": "${config:python.defaultInterpreterPath}",
-        "args": ["-m", "pytest"],
+        "args": ["-m", "helloworld"],
         "problemMatcher": [],
-        "linux":   { "command": "${workspaceFolder}/.venv/bin/python3.13" },
+        "linux":   { "command": "${workspaceFolder:py}/.venv/bin/python3.13" },
+      },
+      {
+        "label": "pytest: helloworld only",
+        "type": "process",
+        "command": "${config:python.defaultInterpreterPath}",
+        "args": ["-m", "pytest", "training/python-apps/helloworld/tests/"],
+        "problemMatcher": [],
+        "linux":   { "command": "${workspaceFolder:py}/.venv/bin/python3.13" },
       },
 
       // ---------- Java (per-app Maven) ----------
@@ -60,7 +60,7 @@
       { "label": "mvn run (hello-console)", "type": "shell",
         "command": "mvn -f ${workspaceFolder:java}/hello-console/pom.xml exec:java",
         "presentation": { "reveal": "always", "panel": "shared", "clear": true }
-      }
+      },
     ]
   },
 
@@ -97,6 +97,15 @@
         "projectName": "hello-console",
         "preLaunchTask": "mvn test (hello-console)",
         "console": "integratedTerminal"
+      },
+      // ---------- React Native ----------
+      {
+        "type": "chrome",
+        "name": "React: hello-react (Vite dev)",
+        "request": "launch",
+        "url": "http://localhost:5173",
+        "webRoot": "${workspaceFolder}/hello-react",
+        "preLaunchTask": "react dev (hello-react)"
       }
     ],
     "compounds": [
