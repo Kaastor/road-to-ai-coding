@@ -1,7 +1,0 @@
-{
-  "folders": [{ "path": "./training/c-sharp" }],
-  "settings": {
-    // optional: if you have a primary solution
-    // "dotnet.defaultSolution": "training/c-sharp/MySolution.sln"
-  }
-}

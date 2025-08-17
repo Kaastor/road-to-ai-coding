@@ -20,3 +20,4 @@ gen
 .settings/
 .idea/
 *.iml
+.fake

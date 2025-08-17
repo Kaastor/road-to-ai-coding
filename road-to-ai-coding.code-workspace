@@ -1,7 +1,129 @@
 {
-    "folders": [
-        {
-            "path": "."
-        }
+  "folders": [
+    { "path": "." },
+    { "name": "cs",   "path": "./training/c-sharp" },
+    { "name": "py",   "path": "./training/python-apps" },
+    { "name": "java", "path": "./training/java-apps" }
+  ],
+
+  "settings": {
+    // Python test discovery (adjust if you use unittest)
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false
+  },
+
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      // ---------- .NET ----------
+      { "label": "dotnet build (all)", "type": "shell",
+        "command": "dotnet build",
+        "options": { "cwd": "${workspaceFolder:cs}" },
+        "group": { "kind": "build", "isDefault": true },
+        "problemMatcher": "$msCompile"
+      },
+      { "label": "dotnet test (all)", "type": "shell",
+        "command": "dotnet test",
+        "options": { "cwd": "${workspaceFolder:cs}" },
+        "group": "test"
+      },
+      { "label": "dotnet test (HelloConsole)", "type": "shell",
+        "command": "dotnet test tests/HelloConsole.Tests/HelloConsole.Tests.csproj",
+        "options": { "cwd": "${workspaceFolder:cs}" },
+        "group": "test"
+      },
+
+      // ---------- Python (example app: helloworld) ----------
+      {
+      "label": "Run: helloworld",
+      "type": "process",
+      "command": "${config:python.defaultInterpreterPath}",
+      "args": ["-m", "helloworld"],
+      "problemMatcher": [],
+      "linux":   { "command": "${workspaceFolder}/.venv/bin/python3.13" },
+      },
+      {
+        "label": "pytest: all",
+        "type": "process",
+        "command": "${config:python.defaultInterpreterPath}",
+        "args": ["-m", "pytest"],
+        "problemMatcher": [],
+        "linux":   { "command": "${workspaceFolder}/.venv/bin/python3.13" },
+      },
+
+      // ---------- Java (per-app Maven) ----------
+      { "label": "mvn test (hello-console)", "type": "shell",
+        "command": "mvn -f ${workspaceFolder:java}/hello-console/pom.xml test",
+        "group": "test",
+        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+      },
+      { "label": "mvn run (hello-console)", "type": "shell",
+        "command": "mvn -f ${workspaceFolder:java}/hello-console/pom.xml exec:java",
+        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+      },
+      { "label": "mvn test (calc-cli)", "type": "shell",
+        "command": "mvn -f ${workspaceFolder:java}/calc-cli/pom.xml test",
+        "group": "test",
+        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+      },
+      { "label": "mvn run (calc-cli add 2 3)", "type": "shell",
+        "command": "mvn -f ${workspaceFolder:java}/calc-cli/pom.xml exec:java -Dexec.args=\"add 2 3\"",
+        "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+      }
     ]
+  },
+
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      // ---------- .NET ----------
+      {
+        "name": ".NET Launch HelloConsole",
+        "type": "coreclr",
+        "request": "launch",
+        "program": "${workspaceFolder:cs}/src/HelloConsole/bin/Debug/net8.0/HelloConsole.dll",
+        "cwd": "${workspaceFolder:cs}/src/HelloConsole",
+        "preLaunchTask": "dotnet build (all)",
+        "console": "integratedTerminal"
+      },
+
+      // ---------- Python ----------
+      {
+        "name": "Python: hello_world",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:py}/hello_world/hello_world/cli.py",
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder:py}/hello_world"
+      },
+
+      // ---------- Java ----------
+      {
+        "type": "java",
+        "name": "Java: hello-console",
+        "request": "launch",
+        "mainClass": "com.example.hello.Hello",
+        "projectName": "hello-console",
+        "preLaunchTask": "mvn test (hello-console)",
+        "console": "integratedTerminal"
+      },
+      {
+        "type": "java",
+        "name": "Java: calc-cli (add 2 3)",
+        "request": "launch",
+        "mainClass": "com.example.calc.Main",
+        "projectName": "calc-cli",
+        "args": ["add", "2", "3"],
+        "preLaunchTask": "mvn test (calc-cli)",
+        "console": "integratedTerminal"
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Run .NET + Java hello together",
+        "configurations": [".NET Launch HelloConsole", "Java: hello-console"],
+        "stopAll": true
+      }
+    ]
+  }
 }
