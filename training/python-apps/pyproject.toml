@@ -1,3 +1,5 @@
+# poetry install
+
 [tool.poetry]
 name = "training-python"
 version = "0.1.0"

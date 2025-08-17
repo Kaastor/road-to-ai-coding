@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    { "id": "app", "type": "pickString", "description": "App", "options": ["hello-console", "calc-cli"], "default": "hello-console" }
+  ],
+  "tasks": [
+    { "label": "mvn test (app)", "type": "shell", "command": "mvn -f ${workspaceFolder}/${input:app}/pom.xml test", "group": "test" },
+    { "label": "mvn package (app)", "type": "shell", "command": "mvn -f ${workspaceFolder}/${input:app}/pom.xml -DskipTests package", "group": "build" },
+    { "label": "mvn run (app)", "type": "shell", "command": "mvn -f ${workspaceFolder}/${input:app}/pom.xml exec:java" }
+  ]
+}

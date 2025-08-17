@@ -11,3 +11,12 @@ training/python/.venv/
 # Common
 .env
 gen
+
+# Maven
+**/target/
+# VS Code / IDEs
+.classpath
+.project
+.settings/
+.idea/
+*.iml
