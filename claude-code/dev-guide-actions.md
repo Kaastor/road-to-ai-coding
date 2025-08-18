@@ -163,13 +163,10 @@ Update your claude.md file:
 
 #### Step 9: Write End-to-End Test
 ```bash
-claude "Write an end-to-end test for this user story: [paste your user story and acceptance criteria]"
+claude "Write a component and unit tests for this user story: [paste your user story and acceptance criteria].
+Make unit tests simple just covering core functionalities."
 ```
 
-#### Step 10: Break Down into Unit Tests
-```bash
-claude "Based on this E2E test, identify the components needed and generate unit tests for each: [paste E2E test]"
-```
 
 #### Step 11: Implement Feature Incrementally
 For each unit test:
