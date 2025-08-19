@@ -224,6 +224,19 @@ claude "Update @CLAUDE.md with current project folder structure"
 
 # Flow
 
+## Meta
+- Use Grok to generate tech stack for the application
+```
+For above application give me:
+- python minimal stack for development (fastapi)
+```
+
+```
+For above application give me list of steps in wchich order I should implement this application to fullfill requirements.
+```
+
+
+## Dev
 `claude --dangerously-skip-permissions`
 
 Run your first Claude Code command:

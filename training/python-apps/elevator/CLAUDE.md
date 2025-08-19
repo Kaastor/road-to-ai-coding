@@ -1,43 +1,51 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-Since 1992 over 4,000 exoplanets have been discovered outside our solar
-system. The United States National Aeronautics and Space Administration (NASA)
-maintains a publicly accessible archive of the data collected on these in
-comma separated value (CSV) format.
+It's tough to think of a world without elevators. Especially if you have to
+walk up and down 20 flights of stairs each day. But, if you think about it 
+elevators were one of the original implementations of events and event handlers
+long before web applications came on the scene.
 
-The objective of the NASA Exoplanet Query app is to make this data available 
-for simple queries by its users. 
+The objective of the Elevator app is to simulate the operation of an elevator
+and more importantly, how to handle the events generated when the buildings
+occupants use it. This app simulates occupants calling for an elevator from
+any floor and pressing the buttons inside the elevator to indicate the floor
+they wish to go to. 
 
-### Requirements & Constraints
+### Constraints
 
-- The Developer should implement a means of efficiently loading the exoplanet
-CSV data obtained from NASA to minimize any delays when the application starts.
-- Similarly, the Developer should utilize a data structure and search mechanism
-that minimizes the time required to query the exoplanet data and display the
-results.
-- The Developer will need to review the Exoplanet Archive documentation to
-understand the format of the data fields.
+- You must implement a single event handler for the up and down buttons on
+each floor. For example, if there are 4 floors a single event handler should
+be implemented rather than 8 (two buttons per floor).
+- Similarly, a single event handler should be implemented for all buttons on
+the control panel in the elevator rather than a unique event handler for each
+button.
 
-### User Stories
+## User Stories
 
-- User can see an query input panel containing dropdowns allowing the
-user to query on year of discovery, discovery method, host name, and discovery
-facility.
-- User can also see 'Clear' and 'Search' buttons in the query input panel.
-- User can select a single value from any one or all of the query
-dropdowns.
-- User can click the 'Search' button to search for exoplanets matching
-all of the selected query values.
-- User can see an error message if the 'Search' button was clicked, but
-no query values were selected.
-- User can see the matching exoplanet data displayed in tabular format 
-in an results panel below the query panel. Only the queriable fields should
-be displayed.
-- User can click the 'Clear' button to reset the query selections and
-clear any data displayed in the results panel, if a search had been performed.
+-   [ ] User can see a cross section diagram of a building with four floors,
+an elevator shaft, the elevator, and an up button on the first floor, up and 
+down buttons on the second and third floors, and a down button on the fourth
+floor.
+-   [ ] User can see the elevator control panel with a button for each of the
+floors to the side of the diagram.
+-   [ ] User can click the up and down button on any floor to call the 
+elevator.
+-   [ ] User can expect that clicking the up and down buttons on any floor
+to request the elevator will be queued and serviced in the sequence they were
+clicked.
+-   [ ] User can see the elevator move up and down the shaft to the floor it
+was called to.
+-   [ ] User can click the elevator control panel to select the floor it
+should travel to.
+-   [ ] User can expect the elevator to pause for 5 seconds waiting for a
+floor button on the control panel to be clicked. If a floor button isn't
+clicked within that time the elevator will process the next call request.
+-   [ ] User can expect the elevator to return to the first floor when there
+are no requests to process.
 
 ## Build & Test Commands
 
@@ -62,6 +70,15 @@ clear any data displayed in the results panel, if a search had been performed.
 - **Linting**: `ruff` for style and error checking
 - **Type checking**: Use VS Code with Pylance for static type checking
 - **Project layout**: Organize code with `src/` layout
+
+### Dev dependencies
+
+- FastAPI: Web framework for building the API backend, handling routes, WebSockets for real-time updates, and serving static files (e.g., HTML/JS/CSS for the UI).
+- Uvicorn: ASGI server to run the FastAPI application.
+- asyncio: Standard library for handling asynchronous event queues, timers (e.g., 5-second pause), and simulation logic without external dependencies.
+- Pydantic: Included with FastAPI; used for data validation and modeling elevator state/requests.
+- HTML/CSS/JavaScript: Vanilla frontend (no frameworks like React) for the UI diagram, buttons, and event handling; use CSS for positioning/animation of the elevator, JS for button clicks sending API requests or WebSocket messages.
+- WebSockets (via FastAPI): For real-time state updates to the client (e.g., elevator position changes) to avoid polling.
 
 ## Code Style Guidelines
 
