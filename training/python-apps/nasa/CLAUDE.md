@@ -3,7 +3,41 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-[description]
+Since 1992 over 4,000 exoplanets have been discovered outside our solar
+system. The United States National Aeronautics and Space Administration (NASA)
+maintains a publicly accessible archive of the data collected on these in
+comma separated value (CSV) format.
+
+The objective of the NASA Exoplanet Query app is to make this data available 
+for simple queries by its users. 
+
+### Requirements & Constraints
+
+- The Developer should implement a means of efficiently loading the exoplanet
+CSV data obtained from NASA to minimize any delays when the application starts.
+- Similarly, the Developer should utilize a data structure and search mechanism
+that minimizes the time required to query the exoplanet data and display the
+results.
+- The Developer will need to review the Exoplanet Archive documentation to
+understand the format of the data fields.
+
+### User Stories
+
+- User can see an query input panel containing dropdowns allowing the
+user to query on year of discovery, discovery method, host name, and discovery
+facility.
+- User can also see 'Clear' and 'Search' buttons in the query input panel.
+- User can select a single value from any one or all of the query
+dropdowns.
+- User can click the 'Search' button to search for exoplanets matching
+all of the selected query values.
+- User can see an error message if the 'Search' button was clicked, but
+no query values were selected.
+- User can see the matching exoplanet data displayed in tabular format 
+in an results panel below the query panel. Only the queriable fields should
+be displayed.
+- User can click the 'Clear' button to reset the query selections and
+clear any data displayed in the results panel, if a search had been performed.
 
 ## Build & Test Commands
 
