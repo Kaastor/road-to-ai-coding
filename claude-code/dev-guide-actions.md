@@ -250,7 +250,13 @@ claude "Generate a project structure for my project using CLAUDE.md information 
 ```
 
 - Check installation
-`npm install`, `npm run dev'
+- React: `npm install`, `npm run dev', `npm test`
+- Python:
+```
+python3.11 -m venv .venv
+source .venv/bin/activate
+poetry install
+```
 
 - Update CLAUDE.md
 ```bash

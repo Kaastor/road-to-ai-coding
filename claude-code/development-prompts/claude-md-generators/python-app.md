@@ -7,14 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Test Commands
 
-### Using uv (recommended)
-- Install dependencies: `uv pip install --system -e .`
-- Install dev dependencies: `uv pip install --system -e ".[dev]"`
-- Update lock file: `uv pip compile --system pyproject.toml -o uv.lock`
-- Install from lock file: `uv pip sync --system uv.lock`
+### Using poetry
+- Install dependencies: `poetry install`
 
 ### Testing
-- Run tests: `pytest`
+- Run tests: `pytest` or `poetry run pytest`
 - Run single test: `pytest tests/path/to/test_file.py::test_function_name -v`
 
 ## Technical Stack
@@ -22,11 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Python version**: Python 3.11
 - **Project config**: `pyproject.toml` for configuration and dependency management
 - **Environment**: Use virtual environment in `.venv` for dependency isolation
-- **Package management**: Use `uv` for faster, more reliable dependency management with lock file
+- **Package management**: Use `poetry install`
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
-- **Version management**: Use `setuptools_scm` for automatic versioning from Git tags
-- **Linting**: `ruff` for style and error checking
-- **Type checking**: Use VS Code with Pylance for static type checking
 - **Project layout**: Organize code with `src/` layout
 
 ## Code Style Guidelines
@@ -63,10 +57,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Error handling**: Implement robust error handling for production reliability
 - **Security best practices**: Follow input validation and data protection practices
 - **Performance**: Optimize critical code sections when necessary
-- **Dependency management**: Add libraries only when essential
-  - When adding/updating dependencies, update `pyproject.toml` first
-  - Regenerate the lock file with `uv pip compile --system pyproject.toml -o uv.lock`
-  - Install the new dependencies with `uv pip sync --system uv.lock`
 
 ## Core Workflow
 - Be sure to typecheck when you’re done making a series of code changes
