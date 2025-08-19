@@ -5,7 +5,7 @@ Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/ref
 
 ## Project Overview
 It's tough to think of a world without elevators. Especially if you have to
-walk up and down 20 flights of stairs each day. But, if you think about it 
+walk up and down 20 flights of stairs each day. But, if you think about it
 elevators were one of the original implementations of events and event handlers
 long before web applications came on the scene.
 
@@ -13,7 +13,7 @@ The objective of the Elevator app is to simulate the operation of an elevator
 and more importantly, how to handle the events generated when the buildings
 occupants use it. This app simulates occupants calling for an elevator from
 any floor and pressing the buttons inside the elevator to indicate the floor
-they wish to go to. 
+they wish to go to.
 
 ### Constraints
 
@@ -27,12 +27,12 @@ button.
 ## User Stories
 
 -   [ ] User can see a cross section diagram of a building with four floors,
-an elevator shaft, the elevator, and an up button on the first floor, up and 
+an elevator shaft, the elevator, and an up button on the first floor, up and
 down buttons on the second and third floors, and a down button on the fourth
 floor.
 -   [ ] User can see the elevator control panel with a button for each of the
 floors to the side of the diagram.
--   [ ] User can click the up and down button on any floor to call the 
+-   [ ] User can click the up and down button on any floor to call the
 elevator.
 -   [ ] User can expect that clicking the up and down buttons on any floor
 to request the elevator will be queued and serviced in the sequence they were
@@ -54,10 +54,10 @@ are no requests to process.
 
 ### Testing
 # all tests
-pytest -c ../pyproject.toml --rootdir ..
+`poetry run pytest`
 
 # single test
-pytest -c ../pyproject.toml --rootdir .. ../tests/path/to/test_file.py::test_function_name -v
+`poetry run pytest elevator/tests/test_app.py::test_hello_name -v`
 
 
 ## Project Structure

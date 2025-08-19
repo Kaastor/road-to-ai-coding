@@ -1,4 +1,4 @@
-from elevator.app import hello
+from app.app import hello
 
 def test_hello_default():
     assert hello() == "Hello, World!"
