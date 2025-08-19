@@ -54,10 +54,11 @@ are no requests to process.
 
 ### Testing
 # all tests
-`poetry run pytest`
+pytest -c ../pyproject.toml --rootdir ..
 
 # single test
-`poetry run pytest elevator/tests/test_app.py::test_hello_name -v`
+pytest -c ../pyproject.toml --rootdir .. ../tests/path/to/test_file.py::test_function_name -v
+
 
 ## Technical Stack
 

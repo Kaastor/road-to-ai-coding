@@ -50,7 +50,22 @@
         "problemMatcher": [],
         "linux":   { "command": "${workspaceFolder:py}/.venv/bin/python3.13" },
       },
-
+      {
+        "label": "Run: elevator",
+        "type": "process",
+        "command": "${config:python.defaultInterpreterPath}",
+        "args": ["-m", "elevator"],
+        "problemMatcher": [],
+        "linux":   { "command": "${workspaceFolder:py}/.venv/bin/python3.13" },
+      },
+      {
+        "label": "pytest: elevator only",
+        "type": "process",
+        "command": "${config:python.defaultInterpreterPath}",
+        "args": ["-m", "pytest", "training/python-app-elevator/elevator/tests/"],
+        "problemMatcher": [],
+        "linux":   { "command": "${workspaceFolder:py}/.venv/bin/python3.13" },
+      },
       // ---------- Java (per-app Maven) ----------
       { "label": "mvn test (hello-console)", "type": "shell",
         "command": "mvn -f ${workspaceFolder:java}/hello-console/pom.xml test",
