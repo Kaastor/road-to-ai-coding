@@ -1,13 +1,13 @@
 # poetry install
 
 [tool.poetry]
-name = "training-elevator"
+name = "training-app"
 version = "0.1.0"
 description = "Training apps"
 authors = ["Your Name <you@example.com>"]
 
 packages = [
-  { include = "elevator" }
+  { include = "app" }
 ]
 
 [tool.poetry.dependencies]
@@ -20,7 +20,7 @@ python-dotenv = "^1.0.0"
 pytest = "^8.0.0"
 
 [tool.poetry.scripts]
-elevator = "elevator.app:main"
+elevator = "app.app:main"
 
 [build-system]
 requires = ["poetry-core"]

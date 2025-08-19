@@ -13,10 +13,10 @@ Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/ref
 
 ### Testing
 # all tests
-`poetry run pytest`
+`poetry run python -m pytest`
 
 # single test
-`poetry run pytest app/tests/test_app.py::test_hello_name -v`
+`poetry run python -m pytest app/tests/test_app.py::test_hello_name -v`
 
 
 ## Project Structure
