@@ -22,18 +22,6 @@ Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/ref
 ## Project Structure
 
 ```
-/
-├── app/                    # Main application package
-│   ├── __init__.py             # Package initialization
-│   ├── __main__.py             # CLI entry point
-│   ├── app.py                  # Core elevator application logic
-│   ├── CLAUDE.md               # This guidance file
-│   └── tests/                  # Test suite
-│       └── test_app.py         # Application tests
-├── pyproject.toml              # Project configuration and dependencies
-├── poetry.lock                 # Locked dependency versions
-└── pytest.ini                 # pytest configuration
-
 ```
 
 ## Technical Stack

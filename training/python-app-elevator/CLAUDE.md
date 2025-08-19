@@ -63,18 +63,6 @@ are no requests to process.
 ## Project Structure
 
 ```
-/
-├── elevator/                    # Main application package
-│   ├── __init__.py             # Package initialization
-│   ├── __main__.py             # CLI entry point
-│   ├── app.py                  # Core elevator application logic
-│   ├── CLAUDE.md               # This guidance file
-│   └── tests/                  # Test suite
-│       └── test_app.py         # Application tests
-├── pyproject.toml              # Project configuration and dependencies
-├── poetry.lock                 # Locked dependency versions
-└── pytest.ini                 # pytest configuration
-
 ```
 
 ## Technical Stack
@@ -86,12 +74,19 @@ are no requests to process.
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
 - **Project layout**: Standard Python package layout
 
-### Dev dependencies
+### Dependencies
 
+**Production dependencies:**
 - FastAPI: Web framework for building the API backend, handling routes, WebSockets for real-time updates, and serving static files (e.g., HTML/JS/CSS for the UI).
 - Uvicorn: ASGI server to run the FastAPI application.
+- python-dotenv: Environment variable management for configuration.
 - asyncio: Standard library for handling asynchronous event queues, timers (e.g., 5-second pause), and simulation logic without external dependencies.
 - Pydantic: Included with FastAPI; used for data validation and modeling elevator state/requests.
+
+**Development dependencies:**
+- pytest: Testing framework for unit and integration tests.
+
+**Frontend technologies:**
 - HTML/CSS/JavaScript: Vanilla frontend (no frameworks like React) for the UI diagram, buttons, and event handling; use CSS for positioning/animation of the elevator, JS for button clicks sending API requests or WebSocket messages.
 - WebSockets (via FastAPI): For real-time state updates to the client (e.g., elevator position changes) to avoid polling.
 
