@@ -3,12 +3,13 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-[Project Description]
+Generate passwords based on certain characteristics selected by the user.
 
 ## Technical Stack
 - Language: JavaScript (ES modules)
 - Framework: React (functional components with hooks)
-- Testing: Jest, @testing-library/react, @testing-library/react-hooks
+- Build Tool: Vite
+- Testing: Vitest, @testing-library/react
 
 ## Build and Test Commands
 
@@ -16,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   as needed)
 - `npm run build` - Build production version
 - `npm run test` - Run all tests
-- `vitest run tests/unit/test-gzip.js` - Run a single test file
+- `vitest run tests/unit/App.test.jsx` - Run a single test file
 
 ## Core Workflow
 - Be sure to typecheck when you’re done making a series of code changes
@@ -56,3 +57,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Use destructuring for objects and arrays when appropriate
   - Use async/await for asynchronous code instead of callbacks or promises
   - Minimise special case handling - prefer explicit over implicit behaviour
+
+## Project Structure
+
+```
+├── CLAUDE.md                 # Project guidance for Claude Code
+├── README.md                 # Project documentation
+├── package.json              # Dependencies and scripts
+├── vite.config.js           # Vite configuration with Vitest setup
+├── public/
+│   └── index.html           # HTML template
+├── src/
+│   ├── main.jsx             # Application entry point
+│   ├── components/          # React components
+│   │   └── App.jsx          # Main App component
+│   ├── hooks/               # Custom React hooks
+│   └── utils/               # Utility functions
+└── tests/
+    ├── setup.js             # Test setup configuration
+    ├── unit/                # Unit tests
+    │   └── App.test.jsx     # App component tests
+    └── integration/         # Integration tests
+```
