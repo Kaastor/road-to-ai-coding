@@ -8,8 +8,7 @@ The Pomodoro Technique is a time management method developed by Francesco Cirill
 ## Project Structure
 ```
 pomodoro/
-├── public/
-│   └── index.html
+├── public/                 # Static assets
 ├── src/
 │   ├── components/
 │   │   └── PomodoroTimer.jsx
@@ -24,6 +23,7 @@ pomodoro/
 │   │   └── test-pomodoro-timer.js
 │   ├── integration/        # Integration tests
 │   └── setup.js           # Test configuration
+├── index.html              # Main HTML file (Vite entry point)
 ├── package.json
 ├── vite.config.js
 ├── .eslintrc.cjs

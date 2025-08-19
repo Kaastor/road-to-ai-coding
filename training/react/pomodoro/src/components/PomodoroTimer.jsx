@@ -23,6 +23,11 @@ const PomodoroTimer = () => {
     setIsActive(!isActive)
   }
 
+  const stop = () => {
+    setIsActive(false)
+    setTimeLeft(isWork ? 25 * 60 : 5 * 60) // Reset to current session duration
+  }
+
   const reset = () => {
     setIsActive(false)
     setIsWork(true)
@@ -45,6 +50,7 @@ const PomodoroTimer = () => {
         <button onClick={toggle}>
           {isActive ? 'Pause' : 'Start'}
         </button>
+        <button onClick={stop}>Stop</button>
         <button onClick={reset}>Reset</button>
       </div>
     </div>

@@ -52,4 +52,26 @@ describe('PomodoroTimer', () => {
     
     expect(screen.getByText('24:59')).toBeInTheDocument()
   })
+
+  test('stops timer and resets to current session duration', () => {
+    render(<PomodoroTimer />)
+    const startButton = screen.getByText('Start')
+    const stopButton = screen.getByText('Stop')
+    
+    fireEvent.click(startButton)
+    vi.advanceTimersByTime(5000) // 5 seconds
+    
+    fireEvent.click(stopButton)
+    expect(screen.getByText('Start')).toBeInTheDocument()
+    expect(screen.getByText('25:00')).toBeInTheDocument() // Reset to full work session
+    expect(screen.getByText('Work Time')).toBeInTheDocument() // Stay in work mode
+  })
+
+  test('has all four control buttons', () => {
+    render(<PomodoroTimer />)
+    
+    expect(screen.getByText('Start')).toBeInTheDocument()
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.getByText('Reset')).toBeInTheDocument()
+  })
 })
