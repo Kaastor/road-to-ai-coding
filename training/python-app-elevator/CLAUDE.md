@@ -53,11 +53,14 @@ are no requests to process.
 - Install dependencies: `poetry install`
 
 ### Testing
-# all tests
-`poetry run pytest`
+# all tests (use python -m pytest to ensure correct virtual environment)
+`poetry run python -m pytest`
 
 # single test
-`poetry run pytest elevator/tests/test_app.py::test_hello_name -v`
+`poetry run python -m pytest elevator/tests/test_elevator.py::TestElevator::test_initialization -v`
+
+### Common Testing Issues & Solutions
+- **Wrong virtual environment**: Use `poetry run python -m pytest` instead of `poetry run pytest`
 
 
 ## Project Structure
@@ -85,6 +88,9 @@ are no requests to process.
 
 **Development dependencies:**
 - pytest: Testing framework for unit and integration tests.
+- pytest-asyncio: Support for async/await testing.
+- pytest-cov: Code coverage reporting.
+- httpx: HTTP client library required for FastAPI TestClient in API tests.
 
 **Frontend technologies:**
 - HTML/CSS/JavaScript: Vanilla frontend (no frameworks like React) for the UI diagram, buttons, and event handling; use CSS for positioning/animation of the elevator, JS for button clicks sending API requests or WebSocket messages.

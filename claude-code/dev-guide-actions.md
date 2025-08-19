@@ -240,22 +240,31 @@ For above application give me list of steps in wchich order I should implement t
 `claude --dangerously-skip-permissions`
 
 Run your first Claude Code command:
-```bash
-claude "Generate a project structure for my project using CLAUDE.md information with the following requirements:
-- Testing setup
-- Basic folder structure following best practices
-- Configuration files for testing
-- A simple README.md
-- Package/dependency management setup"
-```
+- React
+    ```bash
+    claude "Generate a project structure for my project using CLAUDE.md information with the following requirements:
+    - Testing setup
+    - Basic folder structure following best practices
+    - Configuration files for testing
+    - A simple README.md
+    - Package/dependency management setup"
+    ```
+- Python
+    ```bash
+    claude "Generate a project structure for my 'Project Overview' using CLAUDE.md information with the following requirements:
+    - Testing setup to check testing setup
+    - add missing dependencies from 'Dependencies' section
+    - Basic folder structure following best practices
+    - Configuration files for testing
+    - A simple README.md
+    ```
 
 - Check installation
 - React: `npm install`, `npm run dev', `npm test`
 - Python:
 ```
-python3.11 -m venv .venv
-source .venv/bin/activate
 poetry install
+poetry run python -m pytest
 ```
 
 - Update CLAUDE.md

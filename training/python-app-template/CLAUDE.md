@@ -33,7 +33,7 @@ Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/ref
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
 - **Project layout**: Standard Python package layout
 
-### Dev dependencies
+### Dependencies
 
 [List of deps]
 
