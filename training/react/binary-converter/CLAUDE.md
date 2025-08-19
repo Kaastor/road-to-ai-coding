@@ -92,5 +92,35 @@ User can enter up to 8 binary digits in one input field.
 Align with Anthropic's Claude Code guidelines: Use this CLAUDE.md for project-specific instructions; iterate with /init for setup if needed; be specific in prompts (e.g., "Write TDD for BinaryInput validation").
 React TDD tips: Test components as users interact (queryByRole, fireEvent); use act() for async; keep components pure (props in, JSX out); mock APIs with jest.mock if added later. Ensure quick POC: No styling beyond basics, focus on functionality.
 
+## Project Structure
+```
+binary-converter/
+├── CLAUDE.md                 # Project instructions and TDD workflow
+├── README.md                 # Project documentation
+├── index.html               # Vite entry point
+├── package.json             # Dependencies and scripts
+├── package-lock.json        # Dependency lock file
+├── tsconfig.json           # TypeScript configuration
+├── tsconfig.node.json      # TypeScript config for Node.js
+├── vite.config.ts          # Vite bundler configuration
+├── node_modules/           # Installed dependencies
+└── src/
+    ├── App.css             # Main app styles
+    ├── App.tsx             # Root component
+    ├── App.test.tsx        # App component tests
+    ├── main.tsx            # React app entry point
+    ├── index.css           # Global styles
+    ├── components/         # React components
+    │   ├── BinaryInput.tsx
+    │   ├── BinaryInput.test.tsx
+    │   ├── DecimalOutput.tsx
+    │   └── DecimalOutput.test.tsx
+    ├── hooks/              # Custom React hooks
+    ├── types/              # TypeScript type definitions
+    ├── utils/              # Utility functions
+    └── test/
+        └── setup.ts        # Test configuration
+```
+
 ## Iteration Guidelines
 Aim for 5-15 minute red-green-refactor cycles. If stuck, simplify feature or revisit test specificity. Use checklists for complex flows (e.g., validation + conversion). Course-correct early by confirming plans before coding.

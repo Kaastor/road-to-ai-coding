@@ -1,78 +1,97 @@
-You are an expert in Test-Driven Development (TDD) for JavaScript React applications. Your task is to generate a file named CLAUDE.md, which will serve as a reference guide for a "Claude Code agent" during the development of a proof-of-concept (POC) React app. The app is for quick feature testing only—no Git, deployment, or production concerns. Focus on aligning the process strictly with TDD principles to enable rapid iterations: write failing tests first, implement minimal code to pass them, refactor, and repeat.
+# CLAUDE.md
 
-Input: The project description is:
-"""
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-"""
-
-
-Structure CLAUDE.md as a Markdown file with the following sections, keeping content concise, actionable, and tailored to the project description:
-
-1. **Project Overview**: Summarize the project description, key features, and goals. Emphasize it's a POC in React with no external dependencies beyond standard React ecosystem (e.g., React, React-DOM, testing-library/react for tests).
-
-2. **TDD Workflow**: Outline the step-by-step TDD process:
-   - Red: Write a failing test for a specific feature or component.
-   - Green: Implement the minimal code to make the test pass.
-   - Refactor: Clean up code while keeping tests green.
-   - Iterate: Repeat for each feature, building incrementally.
-   - Use Jest and @testing-library/react for testing. Assume a basic setup with create-react-app or equivalent.
-
-3. **Component Breakdown**: List the main React components needed, based on the project description. For each:
-   - Describe its purpose.
-   - Suggest initial TDD steps (e.g., test for rendering, state changes, interactions).
-
-4. **Feature Roadmap**: Break the project into small, testable features or user stories. Prioritize them for iterative development. For each feature:
-   - Define acceptance criteria as test cases.
-   - Suggest edge cases to test.
-
-5. **Best Practices**: Include React-specific TDD tips, such as testing hooks with @testing-library/react-hooks, mocking APIs if needed (use MSW or jest.mock), and ensuring components are pure and testable. Remind to keep the app simple for quick POC validation.
-
-6. **Iteration Guidelines**: Advise on quick cycles: Aim for 5-15 minute iterations per test-implement-refactor loop. If stuck, revisit tests or simplify features.
-
-When creating a CLAUDE.md file use official Anthropic best practices and resources for Claude Code development.
-Output only the contents of CLAUDE.md, starting with # CLAUDE.md as the title. Do not add any external commentary.
-
-Improve over this template:
-
-```
-# Project: [Your App Name]
-## Last Updated: [Today's Date]
-
-## Overview
-[Write a 2-3 sentence description of what your app will do]
+## Project Overview
+[Project Description]
 
 ## Technical Stack
-- Language: [e.g., Python 3.11, Node.js 20]
-- Framework: [e.g., FastAPI, Express, React]
-- Testing: [e.g., pytest, Jest, React Testing Library]
-- Database: [if applicable]
+- Language: JavaScript (ES modules)
+- Framework: React (functional components with hooks)
+- Testing: Jest, @testing-library/react, @testing-library/react-hooks
 
-## Features (Prioritized)
-### Must Have (MVP)
-1. [ ] Feature 1
-2. [ ] Feature 2
-3. [ ] Feature 3
+## Build and Test Commands
 
-### Should Have
-1. [ ] Feature 4
-2. [ ] Feature 5
+- `npm start` - Start development server (IMPORTANT: Never run this command directly; ask the user to start the server
+  as needed)
+- `npm run build` - Build production version
+- `npm run test` - Run all tests
+- `vitest run tests/unit/test-gzip.js` - Run a single test file
 
-### Nice to Have
-1. [ ] Feature 6
+## Core Workflow
+Follow Red-Green-Refactor for each feature:
+1. Write failing test → 2. Minimal passing code → 3. Refacto
 
-## Current Context
-**Working on:** Initial project setup
-**Next step:** Set up testing framework
-**Blockers:** None
 
-## Architecture Decisions
-- [Record key decisions here]
+## Implementation Priority
+1. Core functionality first (render, state)
+2. User interactions
+3. Edge cases
 
-## Code Patterns
-- [Document patterns as you establish them]
+### Iteration Target
+- Around 5 min per cycle
+- Keep tests simple, just core functionality checks
+- Prioritize working code over perfection for POCs
 
-## Test Strategy
-- Unit tests for all business logic
-- Integration tests for API endpoints
-- E2E tests for critical user paths
-```
+## Code Style Guidelines
+
+- **Modules**: ES modules with import/export syntax (type: "module")
+- **JavaScript Target**: ES2020 with strict null checks
+- **Error Handling**: Use try/catch with explicit error messages that provide context about what failed
+- **Naming**: camelCase for variables and functions, PascalCase for classes
+- **Imports**: Group by source (internal/external) with proper separation
+- **Documentation**: Use JSDoc for public APIs and complex functions, add comments for non-obvious code
+- **Error Messages**: Use consistent, specific error messages (e.g., "Track buffer overflow" instead of "Overflow in disc building")
+
+## Test Organization
+
+- **Test Consolidation**: All tests for a specific component should be consolidated in a single test file.
+  For example, all tests for `emulator.js` should be in `test-emulator.js` - do not create separate test files
+  for different aspects of the same component.
+- **Test Structure**: Use nested describe blocks to organize tests by component features
+- **Test Isolation**: When mocking components in tests, use `vi.spyOn()` with `vi.restoreAllMocks()` in
+  `afterEach` hooks rather than global `vi.mock()` to prevent memory leaks and test pollution
+- **Memory Management**: Avoid global mocks that can leak between tests and accumulate memory usage over time
+- **Test philosophy**
+  - Mock as little as possible: Try and rephrase code not to require it.
+  - Try not to rely on internal state: don't manipulate objects' inner state in tests
+  - Use idiomatic vitest assertions (expect/toBe/toEqual) instead of node assert
+
+## Project-Specific Knowledge
+
+- **Never commit code unless asked**: Very often we'll work on code and iterate. After you think it's complete.
+
+### Code Architecture
+
+- **General Principles**:
+  - Follow the existing code style and structure
+  - Use `const` and `let` instead of `var`
+  - Avoid global variables; use module scope
+  - Use arrow functions for callbacks
+  - Prefer template literals over string concatenation
+  - Use destructuring for objects and arrays when appropriate
+  - Use async/await for asynchronous code instead of callbacks or promises
+  - Minimise special case handling - prefer explicit over implicit behaviour
+  - Consider adding tests first before implementing features
+- **When simplifying existing code**
+
+  - Prefer helper functions for repetitive operations (like the `appendParam` function)
+  - Remove unnecessary type checking where types are expected to be correct
+  - Replace complex conditionals with more readable alternatives when possible
+  - Ensure simplifications don't break existing behavior or assumptions
+  - Try and modernise the code to use ES6+ features where possible
+
+- Prefer helper functions for repetitive operations (like the `appendParam` function)
+- Remove unnecessary type checking where types are expected to be correct
+- Replace complex conditionals with more readable alternatives when possible
+- Ensure simplifications don't break existing behavior or assumptions
+
+- **Constants and Magic Numbers**:
+
+  - Local un-exported properties should be used for shared constants
+  - Local constants should be used for temporary values
+  - Always use named constants instead of magic numbers in code
+  - Use PascalCase for module-level constants (e.g., `const MaxHfeTrackPulses = 3132;`)
+  - Prefer module-level constants over function-local constants for shared values
+  - Define constants at the beginning of functions or at the class/module level as appropriate
+  - Add comments explaining what the constant represents, especially for non-obvious values

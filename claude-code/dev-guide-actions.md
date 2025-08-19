@@ -27,48 +27,6 @@ build/
 #### Step 2: Create Your claude.md File
 Create a file named `claude.md` in your project root with this initial template:
 
-```markdown
-# Project: [Your App Name]
-## Last Updated: [Today's Date]
-
-## Overview
-[Write a 2-3 sentence description of what your app will do]
-
-## Technical Stack
-- Language: [e.g., Python 3.11, Node.js 20]
-- Framework: [e.g., FastAPI, Express, React]
-- Testing: [e.g., pytest, Jest, React Testing Library]
-- Database: [if applicable]
-
-## Features (Prioritized)
-### Must Have (MVP)
-1. [ ] Feature 1
-2. [ ] Feature 2
-3. [ ] Feature 3
-
-### Should Have
-1. [ ] Feature 4
-2. [ ] Feature 5
-
-### Nice to Have
-1. [ ] Feature 6
-
-## Current Context
-**Working on:** Initial project setup
-**Next step:** Set up testing framework
-**Blockers:** None
-
-## Architecture Decisions
-- [Record key decisions here]
-
-## Code Patterns
-- [Document patterns as you establish them]
-
-## Test Strategy
-- Unit tests for all business logic
-- Integration tests for API endpoints
-- E2E tests for critical user paths
-```
 
 #### Step 3: Use Claude Code to Generate Project Structure
 Run your first Claude Code command:
@@ -81,12 +39,8 @@ claude "Generate a project structure for [your language/framework] with the foll
 - Package/dependency management setup"
 ```
 
-### 📋 Day 1 Checklist
-- [ ] Project directory created
-- [ ] Git initialized
-- [ ] claude.md file created and filled out
-- [ ] Basic project structure generated
-- [ ] Dependencies installed
+claude -> `Update memory with current project folder structure`
+
 
 ---
 
@@ -114,42 +68,11 @@ claude "Create a Jest configuration with:
 - Example test file"
 ```
 
-#### Step 5: Write Your First Test
-Create your first failing test to establish the TDD workflow:
-
-```bash
-claude "Write a failing test for a simple [describe your first feature, e.g., 'user registration validation function']"
-```
-
-#### Step 6: Run the Test to Ensure It Fails
-```bash
-# For Python
-pytest tests/ -v
-
-# For JavaScript
-npm test
-
-# The test SHOULD fail - this is the "Red" phase of TDD
-```
-
-#### Step 7: Implement Minimal Code to Pass
-```bash
-claude "Write the minimal implementation to make this test pass: [paste your failing test]"
-```
-
-### 📋 Day 2 Checklist
-- [ ] Testing framework configured
-- [ ] Coverage settings established
-- [ ] First failing test written
-- [ ] Test confirmed to fail
-- [ ] Minimal implementation created
-- [ ] Test now passes (Green phase)
-
 ---
 
 ### 🏗️ Day 3: First Feature Development
 
-#### Step 8: Plan Your First Feature
+#### Step 5: Plan Your First Feature
 Update your claude.md file:
 ```markdown
 ## Current Context
@@ -160,34 +83,6 @@ Update your claude.md file:
 - [ ] Criterion 3
 **Next step:** Write E2E test for the feature
 ```
-
-#### Step 9: Write End-to-End Test
-```bash
-claude "Write a component and unit tests for this user story: [paste your user story and acceptance criteria].
-Make unit tests simple just covering core functionalities."
-```
-
-
-#### Step 11: Implement Feature Incrementally
-For each unit test:
-1. Run test (Red)
-2. Implement code (Green)
-3. Refactor (Refactor)
-4. Commit changes
-
-```bash
-# After each successful test
-git add .
-git commit -m "feat: implement [specific functionality]"
-```
-
-### 📋 Day 3 Checklist
-- [ ] First user story documented
-- [ ] E2E test written (failing)
-- [ ] Unit tests created
-- [ ] Features implemented incrementally
-- [ ] All tests passing
-- [ ] Code committed to git
 
 ---
 
@@ -315,50 +210,9 @@ claude "Create test helpers to reduce duplication in: [test files]"
 claude "Given this project context: [paste relevant sections from claude.md], help me with [specific task]"
 ```
 
----
-
-### ✅ First Week Success Criteria
-
-By the end of your first week, you should have:
-1. ✅ Complete project setup with testing framework
-2. ✅ At least 3 features implemented with TDD
-3. ✅ >80% code coverage on business logic
-4. ✅ Established coding patterns documented in claude.md
-5. ✅ Clean git history with meaningful commits
-6. ✅ A rhythm for the TDD cycle
+#### Problem: Outdated CLAUDE.md
+```bash
+claude "Update memory with current project folder structure"
+```
 
 ---
-
-### 📚 Additional Resources
-
-#### Learn More About TDD
-- Practice the Red-Green-Refactor cycle
-- Start with simple functions before complex features
-- Write tests that describe behavior, not implementation
-
-#### Maximize Claude Code Efficiency
-- Be specific in your requests
-- Provide context from your claude.md file
-- Ask for multiple approaches when unsure
-- Request explanations with code
-
-#### Keep Your Momentum
-- Commit working code frequently
-- Celebrate small wins (passing tests!)
-- Review and refactor regularly
-- Keep claude.md updated daily
-
----
-
-## Your Next Action
-
-**Right now, do this:**
-1. Create your project directory
-2. Copy the claude.md template above
-3. Fill in your project details
-4. Run your first Claude Code command to generate the project structure
-5. Commit your initial setup
-
-Remember: The key to success with TDD is consistency. Every feature starts with a test. No exceptions!
-
-Good luck with your development journey! 🚀
