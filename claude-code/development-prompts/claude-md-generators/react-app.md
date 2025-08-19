@@ -16,7 +16,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   as needed)
 - `npm run build` - Build production version
 - `npm run test` - Run all tests
-- `vitest run tests/unit/test-gzip.js` - Run a single test file
 
 ## Core Workflow
 - Be sure to typecheck when you’re done making a series of code changes

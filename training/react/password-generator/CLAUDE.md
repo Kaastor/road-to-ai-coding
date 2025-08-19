@@ -63,10 +63,10 @@ Generate passwords based on certain characteristics selected by the user.
 ```
 ├── CLAUDE.md                 # Project guidance for Claude Code
 ├── README.md                 # Project documentation
+├── index.html               # HTML template (Vite entry point)
 ├── package.json              # Dependencies and scripts
 ├── vite.config.js           # Vite configuration with Vitest setup
-├── public/
-│   └── index.html           # HTML template
+├── public/                  # Static assets
 ├── src/
 │   ├── main.jsx             # Application entry point
 │   ├── components/          # React components
