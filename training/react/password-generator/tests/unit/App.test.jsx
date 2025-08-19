@@ -48,4 +48,25 @@ describe('App', () => {
     fireEvent.click(uppercaseCheckbox);
     expect(uppercaseCheckbox).not.toBeChecked();
   });
+
+  it('renders Generate password button', () => {
+    render(<App />);
+    expect(screen.getByText('Generate password')).toBeInTheDocument();
+  });
+
+  it('generates and displays password when Generate button is clicked', () => {
+    render(<App />);
+    
+    const generateButton = screen.getByText('Generate password');
+    fireEvent.click(generateButton);
+    
+    expect(screen.getByText('Generated Password:')).toBeInTheDocument();
+    const passwordElement = screen.getByText('Generated Password:').nextSibling;
+    expect(passwordElement.textContent).toHaveLength(12);
+  });
+
+  it('does not display password initially', () => {
+    render(<App />);
+    expect(screen.queryByText('Generated Password:')).not.toBeInTheDocument();
+  });
 });

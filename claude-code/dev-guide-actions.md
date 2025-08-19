@@ -252,6 +252,6 @@ claude "Develop a part of this user story: [story] with corresponding unit tests
 claude "Develop a next part of current user story with corresponding minimal unit tests: [part]"
 ```
 
-Develop a part of this user story: [User can select one or multiple of the following: Include uppercase letters, Include lowercase letters, Include numbers, Include symbols] with corresponding minimal unit tests: [Create checkboxes or toggles for each option: uppercase (A-Z), lowercase (a-z), numbers (0-9), symbols (e.g., !@#$%).]
+Develop a part of this user story: [By clicking the Generate password button, the user can see a password being generated] with corresponding minimal unit tests: [Add a "Generate password" button to the UI.]
 
 Develop a next part of current user story with corresponding minimal unit tests: [Set default length (e.g., 12) and enforce minimum/maximum limits (e.g., 8-50).]

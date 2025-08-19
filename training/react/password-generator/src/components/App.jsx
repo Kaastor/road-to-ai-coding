@@ -9,6 +9,7 @@ const App = () => {
     numbers: true,
     symbols: false
   });
+  const [generatedPassword, setGeneratedPassword] = useState('');
 
   const handleLengthChange = (newLength) => {
     setPasswordLength(newLength);
@@ -19,6 +20,30 @@ const App = () => {
       ...prev,
       [type]: !prev[type]
     }));
+  };
+
+  const generatePassword = () => {
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    let availableChars = '';
+    if (characterSets.uppercase) availableChars += uppercase;
+    if (characterSets.lowercase) availableChars += lowercase;
+    if (characterSets.numbers) availableChars += numbers;
+    if (characterSets.symbols) availableChars += symbols;
+
+    if (availableChars === '') {
+      setGeneratedPassword('');
+      return;
+    }
+
+    let password = '';
+    for (let i = 0; i < passwordLength; i++) {
+      password += availableChars.charAt(Math.floor(Math.random() * availableChars.length));
+    }
+    setGeneratedPassword(password);
   };
 
   return (
@@ -64,6 +89,13 @@ const App = () => {
           Include symbols (!@#$%)
         </label>
       </div>
+      <button onClick={generatePassword}>Generate password</button>
+      {generatedPassword && (
+        <div>
+          <h3>Generated Password:</h3>
+          <p>{generatedPassword}</p>
+        </div>
+      )}
     </div>
   );
 };
