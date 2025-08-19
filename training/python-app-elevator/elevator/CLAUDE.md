@@ -60,6 +60,23 @@ pytest -c ../pyproject.toml --rootdir ..
 pytest -c ../pyproject.toml --rootdir .. ../tests/path/to/test_file.py::test_function_name -v
 
 
+## Project Structure
+
+```
+/
+├── elevator/                    # Main application package
+│   ├── __init__.py             # Package initialization
+│   ├── __main__.py             # CLI entry point
+│   ├── app.py                  # Core elevator application logic
+│   ├── CLAUDE.md               # This guidance file
+│   └── tests/                  # Test suite
+│       └── test_app.py         # Application tests
+├── pyproject.toml              # Project configuration and dependencies
+├── poetry.lock                 # Locked dependency versions
+└── pytest.ini                 # pytest configuration
+
+```
+
 ## Technical Stack
 
 - **Python version**: Python 3.11
@@ -67,7 +84,7 @@ pytest -c ../pyproject.toml --rootdir .. ../tests/path/to/test_file.py::test_fun
 - **Environment**: Use virtual environment in `.venv` for dependency isolation
 - **Package management**: Use `poetry install` for faster
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
-- **Project layout**: Organize code with `src/` layout
+- **Project layout**: Standard Python package layout
 
 ### Dev dependencies
 
