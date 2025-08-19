@@ -31,10 +31,10 @@ Create a file named `claude.md` in your project root with this initial template:
 #### Step 3: Use Claude Code to Generate Project Structure
 Run your first Claude Code command:
 ```bash
-claude "Generate a project structure for [your language/framework] with the following requirements:
-- TDD setup with [testing framework]
+claude "Generate a project structure for my project with the following requirements:
+- Testing setup
 - Basic folder structure following best practices
-- Configuration files for testing and linting
+- Configuration files for testing
 - A simple README.md
 - Package/dependency management setup"
 ```
@@ -71,6 +71,8 @@ claude "Create a Jest configuration with:
 ---
 
 ### 🏗️ Day 3: First Feature Development
+
+Break down user stories into small steps
 
 #### Step 5: Plan Your First Feature
 Update your claude.md file:
@@ -148,6 +150,8 @@ claude "Refactor this code using [pattern]: [code]"
 
 # Code review
 claude "Review this code for issues and improvements: [code]"
+
+claude "Develop a following user story with minimal unit tests: "
 ```
 
 #### Documentation Commands
@@ -212,7 +216,7 @@ claude "Given this project context: [paste relevant sections from claude.md], he
 
 #### Problem: Outdated CLAUDE.md
 ```bash
-claude "Update memory with current project folder structure"
+claude "Update @CLAUDE.md with current project folder structure"
 ```
 
 ---

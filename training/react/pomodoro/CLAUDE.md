@@ -3,12 +3,40 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-[Project Description]
+The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks - 5 minutes.
+
+## Project Structure
+```
+pomodoro/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   └── PomodoroTimer.jsx
+│   ├── hooks/              # Custom React hooks
+│   ├── utils/              # Utility functions
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   └── main.jsx
+├── tests/
+│   ├── unit/               # Unit tests
+│   │   └── test-pomodoro-timer.js
+│   ├── integration/        # Integration tests
+│   └── setup.js           # Test configuration
+├── package.json
+├── vite.config.js
+├── .eslintrc.cjs
+├── .gitignore
+├── CLAUDE.md
+└── README.md
+```
 
 ## Technical Stack
 - Language: JavaScript (ES modules)
 - Framework: React (functional components with hooks)
-- Testing: Jest, @testing-library/react, @testing-library/react-hooks
+- Build Tool: Vite
+- Testing: Vitest, @testing-library/react
 
 ## Build and Test Commands
 
@@ -16,7 +44,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   as needed)
 - `npm run build` - Build production version
 - `npm run test` - Run all tests
-- `vitest run tests/unit/test-gzip.js` - Run a single test file
+- `vitest run tests/unit/test-pomodoro-timer.js` - Run a single test file
 
 ## Core Workflow
 - Be sure to typecheck when you’re done making a series of code changes
