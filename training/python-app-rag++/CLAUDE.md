@@ -1,10 +1,24 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
+
 
 ## Project Overview
-A Python console-based elevator simulation for a 4-floor building. The app manages elevator requests using a queue system, handles floor calls, and provides basic building visualization. This is a Proof of Concept focusing on core elevator logic and user interaction patterns.
+“RAG++” with Feedback & Live Re-Rank
+
+“Build a retrieval-augmented generation service over 20–50 short docs; capture user feedback and improve ranking online.” (Hits LLMs + microservice + eval/monitoring.)
+
+* Index: chunk 20–50 markdown files → HF embeddings → FAISS/Chroma.
+* Query pipeline: hybrid recall (BM25 + vectors) → cross-encoder/LLM re-rank → answer with cited spans.
+* Feedback: `POST /feedback` stores 👍/👎 per (query, doc, rank) for online re-weighting.
+  **Endpoints**
+* `POST /ask {q}` → `{answer, sources[], lat_ms, token_usage}`
+* `POST /feedback {q, doc_id, label}` → `{ok:true}`
+* `GET /metrics` → `{p50,p95,hit_rate@3,avg_rerank_ms}`
+  **Success**
+* Cited answers; measurable **hit\_rate\@k**; latency + token counters surfaced. (End-to-end + ops.)
+  **Stretch**
+* Simple “learning to re-rank” weight tweak from feedback (e.g., doc prior boosts).
 
 ## Build & Test Commands
 
@@ -22,23 +36,6 @@ A Python console-based elevator simulation for a 4-floor building. The app manag
 ## Project Structure
 
 ```
-app/
-├── __init__.py
-├── models/
-│   ├── __init__.py
-│   ├── elevator.py        # Core Elevator class
-│   └── request_queue.py   # Request queue management
-├── services/
-│   ├── __init__.py
-│   └── elevator_service.py # Elevator control logic
-├── ui/
-│   ├── __init__.py
-│   └── console_ui.py      # Console interface
-├── tests/
-│   ├── __init__.py
-│   ├── test_elevator.py
-│   └── test_request_queue.py
-└── main.py                # Application entry point
 ```
 
 ## Technical Stack
@@ -52,13 +49,7 @@ app/
 
 ### Dependencies
 
-**Production (minimal for POC):**
-- Standard library only (dataclasses, enum, threading, time, queue)
-
-**Development:**
-- pytest: Testing framework
-- pytest-cov: Test coverage (optional)
-- mypy: Type checking
+[List of deps]
 
 ## Code Style Guidelines
 
