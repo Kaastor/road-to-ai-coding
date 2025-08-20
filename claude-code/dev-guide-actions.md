@@ -3,30 +3,8 @@
 
 ### 🚀 Day 1: Project Initialization
 
-#### Step 1: Set Up Your Project Directory
-```bash
-# Create and navigate to your project directory
-mkdir my-app
-cd my-app
-
-# Initialize version control
-git init
-
-# Create initial .gitignore
-echo "node_modules/
-*.pyc
-__pycache__/
-.coverage
-.pytest_cache/
-dist/
-build/
-*.egg-info/
-.env" > .gitignore
-```
-
 #### Step 2: Create Your claude.md File
 Create a file named `claude.md` in your project root with this initial template:
-
 
 #### Step 3: Use Claude Code to Generate Project Structure
 Run your first Claude Code command:
@@ -41,34 +19,6 @@ claude "Generate a project structure for my project with the following requireme
 
 claude -> `Update memory with current project folder structure`
 
-
----
-
-### 🧪 Day 2: Testing Framework Setup
-
-#### Step 4: Configure Your Testing Environment
-
-**For Python Projects:**
-```bash
-claude "Create a pytest configuration with:
-- pytest.ini file
-- Coverage settings targeting 80% minimum
-- Test directory structure
-- Conftest.py with basic fixtures
-- Example test file"
-```
-
-**For JavaScript/Node.js Projects:**
-```bash
-claude "Create a Jest configuration with:
-- jest.config.js
-- Coverage thresholds at 80%
-- Test directory structure
-- Setup files for testing utilities
-- Example test file"
-```
-
----
 
 ### 🏗️ Day 3: First Feature Development
 
@@ -167,13 +117,6 @@ claude "Create usage examples for this API: [code]"
 
 ### 📊 Progress Tracking
 
-#### Weekly Metrics to Track
-- [ ] Test coverage percentage
-- [ ] Number of tests (unit/integration/e2e)
-- [ ] Features completed
-- [ ] Technical debt items identified
-- [ ] Refactoring completed
-
 #### Update claude.md Weekly With:
 ```markdown
 ## Week [N] Summary
@@ -236,50 +179,86 @@ For above application give me list of steps in wchich order I should implement t
 ```
 
 
+````markdown
+# Flow
+
+## Meta
+- Use Grok to generate tech stack for the application.
+
+### Requests
+- For the above application, provide:
+  - Python minimal stack for development (FastAPI).
+- For the above application, provide a list of steps in which order I should implement this application to fulfill requirements.
+
 ## Dev
-`claude --dangerously-skip-permissions`
 
-Run your first Claude Code command:
-- React
-    ```bash
-    claude "Generate a project structure for my project using CLAUDE.md information with the following requirements:
-    - Testing setup
-    - Basic folder structure following best practices
-    - Configuration files for testing
-    - A simple README.md
-    - Package/dependency management setup"
-    ```
-- Python
-    ```bash
-    claude "Generate a project structure for my 'Project Overview' using CLAUDE.md information with the following requirements:
-    - Testing setup to check testing setup
-    - add missing dependencies from 'Dependencies' section
-    - Basic folder structure following best practices
-    - Configuration files for testing
-    - A simple README.md
-    ```
+### Setup
+```bash
+claude --dangerously-skip-permissions
+````
 
-- Check installation
-- React: `npm install`, `npm run dev', `npm test`
-- Python:
-```
-poetry install
-poetry run python -m pytest
-```
+### Run your first Claude Code command
 
-- Update CLAUDE.md
+* **React**
+
+  ```bash
+  claude "Generate a project structure for my project using CLAUDE.md information with the following requirements:
+  - Testing setup
+  - Basic folder structure following best practices
+  - Configuration files for testing
+  - A simple README.md
+  - Package/dependency management setup"
+  ```
+
+* **Python**
+
+  ```bash
+  claude "Generate a project structure for my 'Project Overview' using CLAUDE.md information with the following requirements:
+  - Testing setup to check testing setup
+  - add missing dependencies from 'Dependencies' section
+  - Basic folder structure following best practices
+  - Configuration files for testing
+  - A simple README.md
+  "
+  ```
+
+### Check installation
+
+* **React**
+
+  ```bash
+  npm install
+  npm run dev
+  npm test
+  ```
+
+* **Python**
+
+  ```bash
+  poetry install
+  poetry run python -m pytest
+  ```
+
+### Update `CLAUDE.md`
+
 ```bash
 claude "Update @CLAUDE.md with current project folder structure"
 ```
 
-Implementation flow:
+### Implementation flow
+
 ```bash
 claude "Develop a part of this user story: [story] with corresponding unit tests: [part]"
 ```
+
 ```bash
 claude "Develop a next part of current user story with corresponding minimal unit tests: [part]"
 ```
 
-Develop a part of this user story: [By clicking the Generate password button, the user can see a password being generated] with corresponding minimal unit tests: [Add a "Generate password" button to the UI.]
+**User story examples**
 
-Develop a next part of current user story with corresponding minimal unit tests: [Set default length (e.g., 12) and enforce minimum/maximum limits (e.g., 8-50).]
+* Develop a part of this user story: \[By clicking the Generate password button, the user can see a password being generated] with corresponding minimal unit tests: \[Add a "Generate password" button to the UI.]
+* Develop a next part of current user story with corresponding minimal unit tests: \[Set default length (e.g., 12) and enforce minimum/maximum limits (e.g., 8-50).]
+
+```
+```

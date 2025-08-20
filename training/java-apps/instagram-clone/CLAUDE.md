@@ -4,7 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-Java 17 hello world application with Maven build system. Template project for Java development with JUnit 5 testing.
+A clone of Facebook's Instagram app where you can login/register, create new posts, follow other users and see other people you follows posts
+
+You should create a MVP (Minimum Viable Product) using a Full stack approach such as the MEAN, MERN or VENM Stack to store images to the server and display them to the client.
+
+## User Stories
+
+-   [ ] User can register for an account storing their name, email/username and password then login to the app using their credentials
+-   [ ] User can create a post and store images to the server (Preferably in a database)
+-   [ ] User has a profile that displays all the images they have uploaded
+-   [ ] User can follow other users
+-   [ ] User can see other users posts (people who the user follows)
 
 ## Build & Test Commands
 
