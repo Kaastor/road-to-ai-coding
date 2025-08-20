@@ -30,8 +30,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # all tests
 `poetry run python -m pytest`
 
-# single test
-`poetry run python -m pytest app/tests/test_app.py::test_hello_name -v`
+# all service layer tests (103 tests - recommended)
+`poetry run python -m pytest app/tests/test_services/ -v`
+
+# test LLM service (new)
+`poetry run python -m pytest app/tests/test_services/test_llm_service.py -v`
 
 # test embedding pipeline
 `poetry run python -m pytest app/tests/test_services/test_tfidf_embedding_service.py -v`
@@ -54,6 +57,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # integration tests
 `poetry run python -m pytest app/tests/test_integration.py -v`
 
+### API Testing
+# Note: FastAPI endpoint tests have compatibility issues with current httpx version
+# Use manual testing with:
+# 1. Start server: `poetry run uvicorn app.app:app --reload`
+# 2. Test with curl, Postman, or browser at http://localhost:8000/docs
+
 
 ## Project Structure
 
@@ -61,9 +70,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 training-python-app-rag++/
 ├── app/
 │   ├── __init__.py
-│   ├── app.py                      # FastAPI application entry point
+│   ├── app.py                      # FastAPI application entry point with API endpoints
 │   ├── models/                     # Data models and schemas
-│   │   └── __init__.py
+│   │   ├── __init__.py
+│   │   └── api.py                  # Pydantic models for API requests/responses
 │   ├── services/                   # Business logic (embeddings, search, LLM)
 │   │   ├── __init__.py
 │   │   ├── document_loader.py      # Markdown document loading
@@ -74,11 +84,12 @@ training-python-app-rag++/
 │   │   ├── vector_storage.py       # FAISS vector similarity search
 │   │   ├── bm25_search.py          # BM25 keyword search service
 │   │   ├── hybrid_search.py        # Hybrid BM25 + vector search with score fusion
-│   │   └── document_indexer.py     # Complete indexing pipeline with hybrid search
+│   │   ├── document_indexer.py     # Complete indexing pipeline with hybrid search
+│   │   └── llm_service.py          # Claude API integration for answer generation
 │   └── tests/
-│       ├── test_app.py                        # API endpoint tests
+│       ├── test_app.py                        # API endpoint tests (compatibility issues)
 │       ├── test_integration.py                # End-to-end pipeline tests
-│       └── test_services/                     # Service layer tests
+│       └── test_services/                     # Service layer tests (103 tests)
 │           ├── __init__.py
 │           ├── test_adaptive_embedding_service.py
 │           ├── test_bm25_search.py         # BM25 search functionality tests
@@ -86,6 +97,7 @@ training-python-app-rag++/
 │           ├── test_document_indexer_lightweight.py
 │           ├── test_document_loader.py
 │           ├── test_hybrid_search.py       # Hybrid search service tests
+│           ├── test_llm_service.py         # LLM service tests (new)
 │           ├── test_mock_embedding_service.py
 │           ├── test_text_chunker.py
 │           ├── test_tfidf_embedding_service.py
@@ -99,6 +111,7 @@ training-python-app-rag++/
 ├── data/                           # Generated embeddings and indices (gitignored)
 │   ├── *.faiss                     # FAISS vector index files
 │   └── *.json                      # Index metadata and document storage
+├── .env.example                    # Environment variables template
 ├── poetry.lock                     # Poetry lock file
 ├── pyproject.toml                  # Poetry configuration and dependencies
 ├── pytest.ini                     # Pytest configuration
@@ -125,10 +138,11 @@ training-python-app-rag++/
 - `rank-bm25` ^0.2.2 - BM25 keyword search implementation
 - `anthropic` ^0.7.0 - Claude API client for LLM integration
 - `python-dotenv` ^1.0.0 - Environment variable management
+- `pydantic` ^2.0.0 - Data validation and serialization
 
 #### Development Dependencies
 - `pytest` ^8.0.0 - Testing framework
-- `httpx` - HTTP client for testing FastAPI endpoints
+- `httpx` ^0.25.0 - HTTP client for testing FastAPI endpoints (version compatibility issues noted)
 
 ## Code Style Guidelines
 
@@ -193,6 +207,127 @@ bm25_results = indexer.bm25_search_documents("machine learning", k=5)
 hybrid_results = indexer.hybrid_search_documents("machine learning", k=5)
 ```
 
+## RAG++ API Endpoints
+
+The FastAPI application provides a complete RAG service with the following endpoints:
+
+### Core API Endpoints
+
+#### POST /ask
+Answers questions using hybrid search and LLM generation.
+
+**Request:**
+```json
+{
+  "q": "What is machine learning?",
+  "max_sources": 5
+}
+```
+
+**Response:**
+```json
+{
+  "answer": "Machine learning is a subset of AI [SOURCE_1]...",
+  "sources": [
+    {
+      "source_file": "docs/introduction.md",
+      "title": "Introduction to AI",
+      "chunk_text": "Machine learning is...",
+      "chunk_index": 0,
+      "relevance_score": 0.85,
+      "cited_spans": ["subset of AI", "algorithms"]
+    }
+  ],
+  "lat_ms": 1250,
+  "token_usage": {
+    "input_tokens": 150,
+    "output_tokens": 75,
+    "total_tokens": 225
+  },
+  "query": "What is machine learning?"
+}
+```
+
+#### POST /feedback
+Submits user feedback for query-document pairs.
+
+**Request:**
+```json
+{
+  "q": "What is machine learning?",
+  "doc_id": "docs/introduction.md",
+  "label": "positive"
+}
+```
+
+**Response:**
+```json
+{
+  "ok": true,
+  "message": "Feedback 'positive' recorded successfully"
+}
+```
+
+#### GET /metrics
+Returns service performance metrics.
+
+**Response:**
+```json
+{
+  "p50": 1200.0,
+  "p95": 2500.0,
+  "hit_rate_at_3": 0.85,
+  "avg_rerank_ms": 120.0,
+  "total_queries": 42,
+  "total_feedback": 15
+}
+```
+
+#### GET /health
+Health check endpoint.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "services": {
+    "indexer": true,
+    "llm": true
+  }
+}
+```
+
+### Environment Configuration
+
+Create a `.env` file from `.env.example`:
+```bash
+cp .env.example .env
+```
+
+Required environment variables:
+- `ANTHROPIC_API_KEY` - Your Claude API key from Anthropic
+- `CLAUDE_MODEL` - Optional, defaults to "claude-3-haiku-20240307"
+- `LOG_LEVEL` - Optional, defaults to "INFO"
+
+### Usage Example
+```bash
+# Start the server
+poetry run uvicorn app.app:app --reload
+
+# Test with curl
+curl -X POST "http://localhost:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{"q": "What is machine learning?", "max_sources": 3}'
+
+# Submit feedback
+curl -X POST "http://localhost:8000/feedback" \
+  -H "Content-Type: application/json" \
+  -d '{"q": "What is machine learning?", "doc_id": "docs/introduction.md", "label": "positive"}'
+
+# Check metrics
+curl http://localhost:8000/metrics
+```
+
 ## Core Workflow
 - Be sure to typecheck when you're done making a series of code changes
 - Prefer running single tests, and not the whole test suite, for performance
@@ -217,11 +352,27 @@ hybrid_results = indexer.hybrid_search_documents("machine learning", k=5)
 ✅ Phase 3: Document indexing and basic vector similarity search
 ✅ Phase 4: Hybrid Search - Add BM25 keyword search capability
 ✅ Phase 4: Combine BM25 + vector search with simple score fusion
-☐ Phase 5: Core API - Implement POST /ask endpoint with basic retrieval
-☐ Phase 5: Add LLM answer generation with cited spans (Claude API)
-☐ Phase 6: Feedback System - Implement POST /feedback endpoint with in-memory storage
-☐ Phase 6: Simple feedback-based document score adjustment
-☐ Phase 7: Monitoring - Add latency tracking and basic metrics collection
-☐ Phase 7: Implement GET /metrics endpoint with p50, p95, hit_rate@3
-☐ Phase 8: Testing - Add unit tests for core components
-☐ Phase 8: Add integration tests for API endpoints
+✅ Phase 5: Core API - Implement POST /ask endpoint with hybrid retrieval integration
+✅ Phase 5: Add LLM answer generation with cited spans using Claude API
+✅ Phase 5: Implement POST /feedback endpoint with in-memory storage
+✅ Phase 5: Add latency tracking and basic metrics collection
+✅ Phase 5: Implement GET /metrics endpoint with p50, p95, hit_rate@3, and GET /health
+✅ Phase 5: Add comprehensive unit tests for LLM service (11 tests)
+✅ Phase 5: Environment configuration with .env.example for Claude API
+☐ Phase 6: Simple feedback-based document score adjustment and live re-ranking
+☐ Phase 7: Advanced monitoring with structured logging and observability
+☐ Phase 8: Production deployment configuration and Docker support
+☐ Phase 8: Fix FastAPI endpoint testing compatibility issues
+
+## Current Status
+
+**✅ PHASE 5 COMPLETE** - The RAG++ service is now fully functional with:
+- Complete POST /ask pipeline with hybrid search → LLM answer generation → cited responses
+- Feedback collection system via POST /feedback
+- Performance monitoring via GET /metrics
+- Health checks via GET /health
+- Token usage tracking and latency measurement
+- 103 passing service layer tests + 11 LLM service tests
+- Environment-based configuration for Claude API
+
+**Next: Phase 6** - Implement learning to re-rank based on user feedback.

@@ -273,9 +273,8 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 4:
-- Hybrid Search - Add BM25 keyword search capability
-- Combine BM25 + vector search with simple score fusion
+claude "Develop following part of the application from Phase 6:
+- Simple feedback-based document score adjustment and live re-ranking
 Create minimal tests and at the end of your work quickly summarize what you did and why and
 what was not accomplished if that is the case."
 ```
