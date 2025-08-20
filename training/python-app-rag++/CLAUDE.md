@@ -1,10 +1,10 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
+Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-[Description]
+A Python console-based elevator simulation for a 4-floor building. The app manages elevator requests using a queue system, handles floor calls, and provides basic building visualization. This is a Proof of Concept focusing on core elevator logic and user interaction patterns.
 
 ## Build & Test Commands
 
@@ -22,6 +22,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Structure
 
 ```
+app/
+├── __init__.py
+├── models/
+│   ├── __init__.py
+│   ├── elevator.py        # Core Elevator class
+│   └── request_queue.py   # Request queue management
+├── services/
+│   ├── __init__.py
+│   └── elevator_service.py # Elevator control logic
+├── ui/
+│   ├── __init__.py
+│   └── console_ui.py      # Console interface
+├── tests/
+│   ├── __init__.py
+│   ├── test_elevator.py
+│   └── test_request_queue.py
+└── main.py                # Application entry point
 ```
 
 ## Technical Stack
@@ -35,7 +52,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Dependencies
 
-[List of deps]
+**Production (minimal for POC):**
+- Standard library only (dataclasses, enum, threading, time, queue)
+
+**Development:**
+- pytest: Testing framework
+- pytest-cov: Test coverage (optional)
+- mypy: Type checking
 
 ## Code Style Guidelines
 
