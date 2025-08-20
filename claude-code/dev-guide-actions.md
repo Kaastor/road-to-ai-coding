@@ -17,9 +17,6 @@ claude "Generate a project structure for my project with the following requireme
 - Package/dependency management setup"
 ```
 
-claude -> `Update memory with current project folder structure`
-
-
 ### 🏗️ Day 3: First Feature Development
 
 Break down user stories into small steps

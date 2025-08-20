@@ -40,16 +40,36 @@ src/
 │   └── java/
 │       └── com/
 │           └── example/
-│               └── hello/
-│                   └── Hello.java
+│               ├── hello/
+│               │   └── InstagramCli.java
+│               └── instagram/
+│                   ├── InstagramApp.java
+│                   ├── model/
+│                   │   └── User.java
+│                   ├── repository/
+│                   │   ├── InMemoryUserRepository.java
+│                   │   └── UserRepository.java
+│                   └── service/
+│                       ├── AuthenticationService.java
+│                       └── UserService.java
 └── test/
     └── java/
         └── com/
             └── example/
-                └── hello/
-                    └── HelloTest.java
+                ├── hello/
+                │   └── InstagramCliTest.java
+                └── instagram/
+                    ├── model/
+                    │   └── UserTest.java
+                    ├── repository/
+                    │   └── UserRepositoryTest.java
+                    └── service/
+                        ├── AuthenticationServiceTest.java
+                        └── UserServiceTest.java
 pom.xml
 CLAUDE.md
+README.md
+target/
 ```
 
 ## Technical Stack
