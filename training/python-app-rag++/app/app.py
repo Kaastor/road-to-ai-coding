@@ -8,6 +8,10 @@ from typing import Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from .models.api import AskRequest, AskResponse, FeedbackRequest, FeedbackResponse, MetricsResponse
 from .services.document_indexer import DocumentIndexer

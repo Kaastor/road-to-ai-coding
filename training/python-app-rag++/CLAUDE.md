@@ -20,6 +20,70 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   **Stretch**
 * Simple “learning to re-rank” weight tweak from feedback (e.g., doc prior boosts).
 
+## Quick Start Tutorial
+
+### 1. Setup & First Run
+
+**Step 1: Install dependencies**
+```bash
+poetry install
+```
+
+**Step 2: Configure API key**
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env and add your Anthropic API key:
+ANTHROPIC_API_KEY=your_actual_claude_api_key_here
+```
+
+**Step 3: Start the server**
+```bash
+poetry run uvicorn app.app:app --reload
+```
+
+The server will automatically:
+- Load 5 sample documents from `docs/` folder
+- Create text chunks and build search indices
+- Initialize hybrid BM25+vector search
+- Start at `http://localhost:8000`
+
+### 2. Try the API
+
+**Ask a question:**
+```bash
+curl -X POST "http://localhost:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{"q": "What is BM25?", "max_sources": 3}'
+```
+
+**Submit feedback to improve results:**
+```bash
+curl -X POST "http://localhost:8000/feedback" \
+  -H "Content-Type: application/json" \
+  -d '{"q": "What is BM25?", "doc_id": "docs/bm25_search.md", "label": "positive"}'
+```
+
+**Check performance metrics:**
+```bash
+curl http://localhost:8000/metrics
+```
+
+### 3. Web Interface
+
+Visit `http://localhost:8000/docs` for interactive Swagger UI to test all endpoints.
+
+### 4. See Learning in Action
+
+1. Ask: "How does search work?"
+2. Submit positive feedback on relevant results
+3. Submit negative feedback on irrelevant results  
+4. Ask similar questions and see improved rankings
+5. Check `/feedback/stats` to monitor learning progress
+
+The system learns from your feedback and immediately improves future search results!
+
 ## Build & Test Commands
 
 ### Using poetry
