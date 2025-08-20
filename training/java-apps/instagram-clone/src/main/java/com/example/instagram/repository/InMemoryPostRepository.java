@@ -28,12 +28,15 @@ public class InMemoryPostRepository implements PostRepository {
         Objects.requireNonNull(userId, "User ID cannot be null");
         return posts.values().stream()
                 .filter(post -> post.userId().equals(userId))
+                .sorted((p1, p2) -> p2.timestamp().compareTo(p1.timestamp()))
                 .toList();
     }
 
     @Override
     public List<Post> findAll() {
-        return List.copyOf(posts.values());
+        return posts.values().stream()
+                .sorted((p1, p2) -> p2.timestamp().compareTo(p1.timestamp()))
+                .toList();
     }
 
     @Override

@@ -21,7 +21,7 @@
         <p><a href="/login">Click here to login</a> or <a href="/register">register a new account</a></p>
     </div>
 
-    <div id="postsContainer" style="display: none;">
+    <div id="mainContainer" style="display: none;">
         <div class="container">
             <div id="userInfo" class="user-info">
                 <div class="user-details">
@@ -141,7 +141,7 @@
                 if (response.ok) {
                     currentUser = await response.json();
                     document.getElementById('currentUsername').textContent = currentUser.username;
-                    document.getElementById('postsContainer').style.display = 'block';
+                    document.getElementById('mainContainer').style.display = 'block';
                     loadMyPosts();
                 } else {
                     handleAuthFailure();
@@ -223,7 +223,7 @@
         
         function showLoginRequired() {
             document.getElementById('loginRequired').style.display = 'block';
-            document.getElementById('postsContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'none';
         }
     </script>
 </body>
