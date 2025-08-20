@@ -132,3 +132,21 @@ training-python-app-rag++/
 - Around 5 min per cycle
 - Keep tests simple, just core functionality checks
 - Prioritize working code over perfection for POCs
+
+# Implementation plan
+
+☐ Phase 1: Add minimal dependencies (FastAPI, uvicorn, pytest, sentence-transformers)
+☐ Phase 2: Document Management - Create sample markdown docs and document loader
+☐ Phase 2: Text chunking functionality with overlap
+☐ Phase 3: Embedding Pipeline - HuggingFace embeddings with simple vector storage
+☐ Phase 3: Document indexing and basic vector similarity search
+☐ Phase 4: Hybrid Search - Add BM25 keyword search capability
+☐ Phase 4: Combine BM25 + vector search with simple score fusion
+☐ Phase 5: Core API - Implement POST /ask endpoint with basic retrieval
+☐ Phase 5: Add LLM answer generation with cited spans (Claude API)
+☐ Phase 6: Feedback System - Implement POST /feedback endpoint with in-memory storage
+☐ Phase 6: Simple feedback-based document score adjustment
+☐ Phase 7: Monitoring - Add latency tracking and basic metrics collection
+☐ Phase 7: Implement GET /metrics endpoint with p50, p95, hit_rate@3
+☐ Phase 8: Testing - Add unit tests for core components
+☐ Phase 8: Add integration tests for API endpoints

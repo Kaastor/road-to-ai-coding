@@ -264,7 +264,7 @@ claude "Check if you have the ability to run and test this application. Use @CLA
 claude "Create a implementation plan for this 'Project Overview' locatecd in @CLAUDE.md.
 - I want to have modular plan that will allow to work in small iterative steps.
 - This is Proof of Concept application not production ready app.
-- Include minimal necessary dependencies needed to develop the project
+- Include necessary dependencies needed to develop the project, if you do not have to implement something, use a library
 ```
 
 ```bash
@@ -272,11 +272,8 @@ claude "Update @CLAUDE.md with current project folder structure, new commands an
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 3: Web Interface Foundation
-- Set up ASP.NET Core web application
-- Create basic controller and views
-- Username prompt page/modal
-- Chat message display area
+claude "Develop following part of the application from Phase 2:
+Document Management - Create sample markdown docs and document loader
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
 
