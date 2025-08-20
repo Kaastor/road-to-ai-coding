@@ -256,10 +256,15 @@ claude "Develop a next part of current user story with corresponding minimal uni
 ```
 
 ```bash
-claude "Develop following part of the application: [part].
-Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective."
-```
+# Turn plan mode on
 
+claude "Develop following part of the application from Phase [x]: [part].
+Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective.
+
+
+```bash
+claude "Refactor this code for better [performance/readability]: [code]"
+```
 
 **User story examples**
 
@@ -267,4 +272,16 @@ Create minimal tests and at the end of your work summarize what you did and why 
 * Develop a next part of current user story with corresponding minimal unit tests: \[Set default length (e.g., 12) and enforce minimum/maximum limits (e.g., 8-50).]
 
 ```
+```
+
+
+### Workbook
+
+```bash
+claude "Develop following part of the application from Phase 1:
+-- Create `UserRepository` interface with CRUD operations
+- Implement `InMemoryUserRepository` with Map storage
+- Add UserRepositoryTest with save/find operations
+- Test storage and retrieval functionality
+Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective."
 ```
