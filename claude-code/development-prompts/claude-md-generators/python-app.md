@@ -1,9 +1,10 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-[description]
+[Description]
 
 ## Build & Test Commands
 
@@ -11,17 +12,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Install dependencies: `poetry install`
 
 ### Testing
-- Run tests: `pytest` or `poetry run pytest`
-- Run single test: `pytest tests/path/to/test_file.py::test_function_name -v`
+# all tests
+`poetry run python -m pytest`
+
+# single test
+`poetry run python -m pytest app/tests/test_app.py::test_hello_name -v`
+
+
+## Project Structure
+
+```
+```
 
 ## Technical Stack
 
 - **Python version**: Python 3.11
 - **Project config**: `pyproject.toml` for configuration and dependency management
 - **Environment**: Use virtual environment in `.venv` for dependency isolation
-- **Package management**: Use `poetry install`
+- **Package management**: Use `poetry install` for faster
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
-- **Project layout**: Organize code with `src/` layout
+- **Project layout**: Standard Python package layout
+
+### Dependencies
+
+[List of deps]
 
 ## Code Style Guidelines
 
@@ -57,6 +71,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Error handling**: Implement robust error handling for production reliability
 - **Security best practices**: Follow input validation and data protection practices
 - **Performance**: Optimize critical code sections when necessary
+
 
 ## Core Workflow
 - Be sure to typecheck when you’re done making a series of code changes
