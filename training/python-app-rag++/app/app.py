@@ -12,6 +12,7 @@ import uvicorn
 from .models.api import AskRequest, AskResponse, FeedbackRequest, FeedbackResponse, MetricsResponse
 from .services.document_indexer import DocumentIndexer
 from .services.llm_service import LLMService
+from .services.feedback_scorer import FeedbackScorer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +28,7 @@ app = FastAPI(
 # Global instances
 document_indexer: DocumentIndexer | None = None
 llm_service: LLMService | None = None
+feedback_scorer: FeedbackScorer | None = None
 
 # In-memory feedback storage and metrics
 feedback_store: list[Dict[str, Any]] = []
@@ -36,7 +38,7 @@ query_metrics: list[float] = []  # Response times in ms
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup."""
-    global document_indexer, llm_service
+    global document_indexer, llm_service, feedback_scorer
     
     try:
         # Initialize document indexer
@@ -56,6 +58,10 @@ async def startup_event():
         llm_service = LLMService()
         logger.info("LLM service initialized")
         
+        # Initialize feedback scorer
+        feedback_scorer = FeedbackScorer()
+        logger.info("Feedback scorer initialized")
+        
     except Exception as e:
         logger.error(f"Failed to initialize services: {e}")
         # Continue startup even if initialization fails
@@ -74,18 +80,27 @@ async def ask_question(request: AskRequest) -> AskResponse:
     start_time = time.time()
     
     try:
-        if not document_indexer or not llm_service:
+        if not document_indexer or not llm_service or not feedback_scorer:
             raise HTTPException(status_code=503, detail="Services not initialized")
         
         # Perform hybrid search to retrieve relevant documents
         logger.info(f"Processing query: '{request.q}'")
         search_results = document_indexer.hybrid_search_documents(
             query=request.q,
-            k=request.max_sources
+            k=request.max_sources * 2  # Get more results for feedback re-ranking
         )
         
         if not search_results:
             logger.warning(f"No search results found for query: '{request.q}'")
+        else:
+            # Apply feedback-based re-ranking
+            search_results = feedback_scorer.adjust_search_results(
+                results=search_results,
+                query=request.q,
+                score_key="hybrid_score"
+            )
+            # Trim to requested number after re-ranking
+            search_results = search_results[:request.max_sources]
         
         # Generate answer with citations using LLM
         answer, cited_sources, token_usage = llm_service.generate_answer_with_citations(
@@ -124,11 +139,14 @@ async def submit_feedback(request: FeedbackRequest) -> FeedbackResponse:
         Confirmation of feedback submission.
     """
     try:
+        if not feedback_scorer:
+            raise HTTPException(status_code=503, detail="Feedback scorer not initialized")
+        
         # Validate feedback label
         if request.label not in ["positive", "negative"]:
             raise HTTPException(status_code=400, detail="Label must be 'positive' or 'negative'")
         
-        # Store feedback
+        # Store feedback in legacy format for metrics
         feedback_entry = {
             "query": request.q,
             "doc_id": request.doc_id,
@@ -136,6 +154,13 @@ async def submit_feedback(request: FeedbackRequest) -> FeedbackResponse:
             "timestamp": time.time()
         }
         feedback_store.append(feedback_entry)
+        
+        # Store feedback in feedback scorer for live re-ranking
+        feedback_scorer.add_feedback(
+            query=request.q,
+            doc_id=request.doc_id,
+            label=request.label
+        )
         
         logger.info(f"Feedback recorded: {request.label} for query '{request.q}' and doc '{request.doc_id}'")
         
@@ -191,10 +216,31 @@ async def get_metrics() -> MetricsResponse:
         raise HTTPException(status_code=500, detail=f"Error calculating metrics: {str(e)}")
 
 
+@app.get("/feedback/stats")
+async def get_feedback_stats():
+    """Get detailed feedback statistics."""
+    try:
+        if not feedback_scorer:
+            raise HTTPException(status_code=503, detail="Feedback scorer not initialized")
+        
+        return feedback_scorer.get_feedback_stats()
+        
+    except Exception as e:
+        logger.error(f"Error getting feedback stats: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting feedback stats: {str(e)}")
+
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "services": {"indexer": document_indexer is not None, "llm": llm_service is not None}}
+    return {
+        "status": "healthy", 
+        "services": {
+            "indexer": document_indexer is not None, 
+            "llm": llm_service is not None,
+            "feedback_scorer": feedback_scorer is not None
+        }
+    }
 
 
 def main() -> None:

@@ -30,7 +30,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # all tests
 `poetry run python -m pytest`
 
-# all service layer tests (103 tests - recommended)
+# all service layer tests (120 tests - recommended)
 `poetry run python -m pytest app/tests/test_services/ -v`
 
 # test LLM service (new)
@@ -53,6 +53,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # test hybrid search integration
 `poetry run python -m pytest app/tests/test_services/test_document_indexer_hybrid.py -v`
+
+# test feedback scoring (new)
+`poetry run python -m pytest app/tests/test_services/test_feedback_scorer.py -v`
 
 # integration tests
 `poetry run python -m pytest app/tests/test_integration.py -v`
@@ -85,11 +88,12 @@ training-python-app-rag++/
 │   │   ├── bm25_search.py          # BM25 keyword search service
 │   │   ├── hybrid_search.py        # Hybrid BM25 + vector search with score fusion
 │   │   ├── document_indexer.py     # Complete indexing pipeline with hybrid search
-│   │   └── llm_service.py          # Claude API integration for answer generation
+│   │   ├── llm_service.py          # Claude API integration for answer generation
+│   │   └── feedback_scorer.py      # Feedback-based document scoring and live re-ranking
 │   └── tests/
 │       ├── test_app.py                        # API endpoint tests (compatibility issues)
 │       ├── test_integration.py                # End-to-end pipeline tests
-│       └── test_services/                     # Service layer tests (103 tests)
+│       └── test_services/                     # Service layer tests (120 tests)
 │           ├── __init__.py
 │           ├── test_adaptive_embedding_service.py
 │           ├── test_bm25_search.py         # BM25 search functionality tests
@@ -98,6 +102,7 @@ training-python-app-rag++/
 │           ├── test_document_loader.py
 │           ├── test_hybrid_search.py       # Hybrid search service tests
 │           ├── test_llm_service.py         # LLM service tests (new)
+│           ├── test_feedback_scorer.py     # Feedback scoring tests (new)
 │           ├── test_mock_embedding_service.py
 │           ├── test_text_chunker.py
 │           ├── test_tfidf_embedding_service.py
@@ -207,6 +212,43 @@ bm25_results = indexer.bm25_search_documents("machine learning", k=5)
 hybrid_results = indexer.hybrid_search_documents("machine learning", k=5)
 ```
 
+## Feedback-Based Live Re-Ranking
+
+The application now includes a sophisticated feedback learning system that improves search relevance over time:
+
+### Feedback Scoring Features
+- **Real-time Learning**: Document scores are adjusted immediately when feedback is submitted
+- **Global Document Scoring**: Documents accumulate reputation across all queries
+- **Query-Specific Learning**: Documents can have different scores for different query types
+- **Configurable Parameters**: Positive boost (default 20%) and negative penalty (default 10%) are tunable
+- **Score Bounds**: Feedback adjustments are bounded to prevent extreme score distortions (0.1x to 2.0x)
+
+### How It Works
+1. **Initial Search**: Hybrid search retrieves 2x the requested documents for better re-ranking pool
+2. **Feedback Application**: FeedbackScorer calculates boost/penalty multipliers for each document
+3. **Score Adjustment**: Original search scores are multiplied by feedback-based multipliers
+4. **Re-ranking**: Results are re-sorted by adjusted scores before returning top-k to user
+5. **Continuous Learning**: Each feedback submission immediately updates future rankings
+
+### Usage Example
+```python
+from app.services.feedback_scorer import FeedbackScorer
+
+# Initialize scorer
+scorer = FeedbackScorer(positive_boost=0.2, negative_penalty=0.1)
+
+# Record feedback
+scorer.add_feedback("machine learning", "docs/intro.md:0", "positive")
+scorer.add_feedback("machine learning", "docs/complex.md:1", "negative")
+
+# Apply to search results
+adjusted_results = scorer.adjust_search_results(
+    results=search_results,
+    query="machine learning",
+    score_key="hybrid_score"
+)
+```
+
 ## RAG++ API Endpoints
 
 The FastAPI application provides a complete RAG service with the following endpoints:
@@ -292,8 +334,27 @@ Health check endpoint.
   "status": "healthy",
   "services": {
     "indexer": true,
-    "llm": true
+    "llm": true,
+    "feedback_scorer": true
   }
+}
+```
+
+#### GET /feedback/stats
+Returns detailed feedback statistics for monitoring learning progress.
+
+**Response:**
+```json
+{
+  "total_feedback_entries": 25,
+  "total_positive": 18,
+  "total_negative": 7,
+  "unique_documents_with_feedback": 8,
+  "unique_query_document_pairs": 15,
+  "top_documents": [["docs/introduction.md:0", 0.75, 4]],
+  "bottom_documents": [["docs/complex.md:2", -0.33, 3]],
+  "positive_boost_factor": 0.2,
+  "negative_penalty_factor": 0.1
 }
 ```
 
@@ -326,6 +387,9 @@ curl -X POST "http://localhost:8000/feedback" \
 
 # Check metrics
 curl http://localhost:8000/metrics
+
+# Check feedback statistics
+curl http://localhost:8000/feedback/stats
 ```
 
 ## Core Workflow
@@ -359,20 +423,22 @@ curl http://localhost:8000/metrics
 ✅ Phase 5: Implement GET /metrics endpoint with p50, p95, hit_rate@3, and GET /health
 ✅ Phase 5: Add comprehensive unit tests for LLM service (11 tests)
 ✅ Phase 5: Environment configuration with .env.example for Claude API
-☐ Phase 6: Simple feedback-based document score adjustment and live re-ranking
+✅ Phase 6: Simple feedback-based document score adjustment and live re-ranking
 ☐ Phase 7: Advanced monitoring with structured logging and observability
 ☐ Phase 8: Production deployment configuration and Docker support
 ☐ Phase 8: Fix FastAPI endpoint testing compatibility issues
 
 ## Current Status
 
-**✅ PHASE 5 COMPLETE** - The RAG++ service is now fully functional with:
-- Complete POST /ask pipeline with hybrid search → LLM answer generation → cited responses
-- Feedback collection system via POST /feedback
+**✅ PHASE 6 COMPLETE** - The RAG++ service now includes live learning capabilities with:
+- Complete POST /ask pipeline with hybrid search → feedback-based re-ranking → LLM answer generation → cited responses
+- Advanced feedback collection system via POST /feedback with live score adjustment
 - Performance monitoring via GET /metrics
-- Health checks via GET /health
+- Detailed feedback analytics via GET /feedback/stats
+- Health checks via GET /health with feedback scorer status
 - Token usage tracking and latency measurement
-- 103 passing service layer tests + 11 LLM service tests
+- 120 passing service layer tests (103 original + 17 feedback scorer tests)
 - Environment-based configuration for Claude API
+- **Live re-ranking based on user feedback** - documents are dynamically boosted/penalized based on positive/negative feedback
 
-**Next: Phase 6** - Implement learning to re-rank based on user feedback.
+**Next: Phase 7** - Advanced monitoring with structured logging and observability.
