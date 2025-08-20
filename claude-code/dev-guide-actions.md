@@ -255,6 +255,11 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 ### Workbook
 
+
+```bash
+claude "Check if you have the ability to run and test this application. Use @CLAUDE.md for project information."
+```
+
 ```bash
 claude "Create a implementation plan for this 'Project Overview' locatecd in @CLAUDE.md.
 - I want to have modular plan that will allow to work in small iterative steps.
