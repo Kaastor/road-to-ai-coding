@@ -256,11 +256,15 @@ claude "Develop a next part of current user story with corresponding minimal uni
 ```
 
 ```bash
+claude "Create a implementation plan for this 'Project Overview' locatec in @CLAUDE.md. I want to have modular plan that will allow to work in small iterative steps.
+```
+
+```bash
 # Turn plan mode on
 
 claude "Develop following part of the application from Phase [x]: [part].
 Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective.
-
+```
 
 ```bash
 claude "Refactor this code for better [performance/readability]: [code]"
@@ -279,9 +283,9 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 ```bash
 claude "Develop following part of the application from Phase 1:
-- Create `UserService` class with registration logic
-- Implement password validation and duplicate username checks
-- Add UserServiceTest covering registration scenarios
-- Test business logic isolation
+- Create `AuthenticationService` for login/logout
+- Implement simple session management with Map storage
+- Add AuthenticationServiceTest for login flows
+- Test credential validation
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
