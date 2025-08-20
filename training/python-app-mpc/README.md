@@ -65,7 +65,7 @@ poetry run python -m pytest --cov=app
 # Run only unit tests
 poetry run python -m pytest -m unit
 
-# Run only integration tests  
+# Run only integration tests
 poetry run python -m pytest -m integration
 ```
 
@@ -91,3 +91,58 @@ poetry run mypy app/
 - **Type Checking**: mypy
 - **Web Framework**: FastAPI (if needed)
 - **Configuration**: python-dotenv for environment variables
+
+
+# Implementation plan
+
+Phase 1: Foundation (Week 1)
+
+  1. Database Setup
+    - PostgreSQL with pgvector
+    - Basic schema: documents, chunks, embeddings tables
+    - SQLAlchemy models and Alembic migrations
+  2. Core FastAPI Structure
+    - Basic app with health endpoint
+    - Configuration management (pydantic-settings)
+    - Structured logging setup
+
+  Phase 2: PDF Processing (Week 2)
+
+  3. PDF Ingestion Pipeline
+    - File hash-based deduplication
+    - Text extraction (without MCP first - use pypdf2/pymupdf)
+    - Basic chunking strategy (recursive, ~800-1000 tokens)
+  4. Storage Layer
+    - Document and chunk persistence
+    - Basic CRUD operations
+
+  Phase 3: Embeddings & Search (Week 3)
+
+  5. Embeddings Generation
+    - Local sentence-transformers model
+    - Batch processing for chunks
+    - Vector storage in pgvector
+  6. Basic Retrieval
+    - Vector similarity search
+    - Simple ranking and scoring
+
+  Phase 4: API & Integration (Week 4)
+
+  7. REST Endpoints
+    - POST /ingest
+    - POST /query
+    - GET /healthz, /metrics, /docs
+  8. BM25 Hybrid Search
+    - Combine vector + BM25 scoring
+    - Configurable retrieval parameters
+
+  Phase 5: Operations & Testing (Week 5)
+
+  9. Testing Suite
+    - Unit tests for core functions
+    - Integration tests for endpoints
+    - Smoke tests for full pipeline
+  10. Operations
+    - Makefile targets
+    - Prometheus metrics
+    - Docker setup

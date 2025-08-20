@@ -67,13 +67,6 @@ Goose’s job is to wire and scaffold; your app’s job is to serve, test itself
    * Role: “operator” can purge docs and reindex; soft delete with tombstones.
 
 
-## Data Model (minimum)
-
-* `documents(id, external_id, filename, sha256, title, meta, created_at, deleted_at)`
-* `chunks(id, document_id, page_start, page_end, chunk_index, text, token_count)`
-* `embeddings(chunk_id, vector VECTOR, model, created_at)` with `pgvector` index
-* `ingestion_jobs(id, source, status, started_at, finished_at, error)`
-
 ---
 
 # Project Dev Dependencies (Python)
