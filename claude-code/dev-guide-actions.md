@@ -283,9 +283,9 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 ```bash
 claude "Develop following part of the application from Phase 1:
-- Create `AuthenticationService` for login/logout
-- Implement simple session management with Map storage
-- Add AuthenticationServiceTest for login flows
-- Test credential validation
+- Create `InstagramCli` main class replacing Hello.java
+- Implement user registration and login commands
+- Add basic menu system for user interactions
+- Manual test: register user, login, view profile
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
