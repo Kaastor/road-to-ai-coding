@@ -45,13 +45,17 @@ src/
 │               └── instagram/
 │                   ├── InstagramApp.java
 │                   ├── model/
-│                   │   └── User.java
+│                   │   ├── User.java
+│                   │   └── Post.java
 │                   ├── repository/
+│                   │   ├── UserRepository.java
 │                   │   ├── InMemoryUserRepository.java
-│                   │   └── UserRepository.java
+│                   │   ├── PostRepository.java
+│                   │   └── InMemoryPostRepository.java
 │                   └── service/
 │                       ├── AuthenticationService.java
-│                       └── UserService.java
+│                       ├── UserService.java
+│                       └── PostService.java
 └── test/
     └── java/
         └── com/
@@ -60,12 +64,15 @@ src/
                 │   └── InstagramCliTest.java
                 └── instagram/
                     ├── model/
-                    │   └── UserTest.java
+                    │   ├── UserTest.java
+                    │   └── PostTest.java
                     ├── repository/
-                    │   └── UserRepositoryTest.java
+                    │   ├── UserRepositoryTest.java
+                    │   └── PostRepositoryTest.java
                     └── service/
                         ├── AuthenticationServiceTest.java
-                        └── UserServiceTest.java
+                        ├── UserServiceTest.java
+                        └── PostServiceTest.java
 pom.xml
 CLAUDE.md
 README.md
