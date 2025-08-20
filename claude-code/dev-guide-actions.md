@@ -280,9 +280,9 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 ```bash
 claude "Develop following part of the application from Phase 2:
-- Create `PostRepository` interface and `InMemoryPostRepository`
-- Implement findByUserId, save, findAll methods
-- Add PostRepositoryTest for CRUD operations
-- Test post storage and user association
+- Extend InstagramCli with post creation and viewing
+- Add "create post" and "view my posts" commands
+- Implement post listing with timestamps
+- Manual test: create posts, view user posts
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
