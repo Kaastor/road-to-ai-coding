@@ -4,7 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-Simple .NET 8.0 console application that outputs "Hello, World!" - serves as a basic template for C# console applications.
+Real-time chat interface where multiple users can interact with each other by sending messages.
+
+As a MVP(Minimum Viable Product) you can focus on building the Chat interface. Real-time functionality can be added later (the bonus features).
+
+## User Stories
+
+-   [ ] User is prompted to enter a username when he visits the chat app. The username will be stored in the application
+-   [ ] User can see an `input field` where he can type a new message
+-   [ ] By pressing the `enter` key or by clicking on the `send` button the text will be displayed in the `chat box` alongside his username (e.g. `John Doe: Hello World!`)
+
+## Bonus features
+
+-   [ ] The messages will be visible to all the Users that are in the chat app (using WebSockets)
+-   [ ] When a new User joins the chat, a message is displayed to all the existing Users
+-   [ ] Messages are saved in a database
+-   [ ] User can send images, videos and links which will be displayed properly
+-   [ ] User can select and send an emoji
+-   [ ] Users can chat in private
+-   [ ] Users can join `channels` on specific topics
 
 ## Build & Test Commands
 
@@ -19,6 +37,14 @@ Simple .NET 8.0 console application that outputs "Hello, World!" - serves as a b
 - Run application: `dotnet run`
 - Format code: `dotnet format`
 
+### ⚡ Fast Development Commands (Use These!)
+- **Incremental build only**: `dotnet build --no-restore` (skip restore if packages unchanged)
+- **Run without build**: `dotnet run --no-build` (if already built)
+- **Watch mode (auto-rebuild/rerun)**: `dotnet watch run` ⭐ **Best for dev**
+- **Hot reload console**: `dotnet watch run --no-hot-reload` (faster startup)
+- **Parallel build**: `dotnet build -m` (use all CPU cores)
+- **Skip up-to-date check**: `dotnet build --no-dependencies`
+
 ### Testing (xUnit recommended)
 - **All tests**: `dotnet test`
 - **Collect coverage** (with `coverlet.collector`):  
@@ -27,17 +53,82 @@ Simple .NET 8.0 console application that outputs "Hello, World!" - serves as a b
   `dotnet test --filter "FullyQualifiedName=ElevatorApp.Tests.Unit.MyTests.My_method_should_do_x"`
 - **By display name contains**:  
   `dotnet test --filter "DisplayName~should_do_x"`
-- **Watch mode** (fast feedback): `dotnet watch test`
+
+### ⚡ Fast Testing Commands
+- **Watch mode (auto-rerun)**: `dotnet watch test` ⭐ **Best for TDD**
+- **Skip build if unchanged**: `dotnet test --no-build`
+- **Skip restore**: `dotnet test --no-restore`
+- **Parallel test execution**: `dotnet test --parallel`
+- **Fast failing tests only**: `dotnet test --filter "Priority=1"`
+
+## Implementation Plan - Modular PoC Approach
+
+### Phase 1: Basic Console Chat Setup ✅
+**Goal**: Establish project foundation
+- Create basic console app structure
+- Implement username collection on startup
+- Basic message input/output loop
+- **Infinite Loop Protection**: Implemented robust guards against common scenarios
+- **Dependencies**: None (basic .NET 8.0 only)
+
+### Phase 2: Message Storage & Display
+**Goal**: Core chat logic
+- Create `Message` record class
+- Implement `IChatService` interface
+- Add in-memory message storage
+- Format messages as "Username: Message"
+
+### Phase 3: Web Interface Foundation
+**Goal**: Move to web-based UI
+- Set up ASP.NET Core web application
+- Create basic controller and views
+- **Dependencies**: `Microsoft.AspNetCore.Mvc` (built-in)
+
+### Phase 4: Chat UI Components
+**Goal**: Build chat interface
+- Username prompt page/modal
+- Message input field
+- Chat message display area
+- Basic styling
+
+### Phase 5: Message Handling
+**Goal**: Interactive functionality
+- Form submission for messages
+- Enter key support (JavaScript)
+- Send button functionality
+- Session-based username storage
+
+### Phase 6: Basic Testing 
+**Goal**: Quality assurance
+- Unit tests for `ChatService`
+- Basic controller tests
+
+### Architecture Overview
+- **Domain**: `Message` record, `IChatService` interface
+- **Service**: `InMemoryChatService` implementation  
+- **Web**: Single controller with 2-3 views
+- **Storage**: In-memory list (no database for PoC)
 
 ## Project Structure
 
 ```
-HelloConsole/
-├── HelloConsole.csproj    # Project file
-├── Program.cs             # Main application entry point
-├── CLAUDE.md             # Project documentation
-├── bin/                  # Build output (generated)
-└── obj/                  # Build artifacts (generated)
+ChatApp/
+├── ChatApp.csproj        # Project file
+├── Program.cs            # Main application entry point
+├── Models/               # Domain models
+│   └── Message.cs
+├── Services/             # Business logic
+│   ├── IChatService.cs
+│   └── InMemoryChatService.cs
+├── Controllers/          # Web controllers
+│   └── ChatController.cs
+├── Views/                # Razor views
+│   ├── Chat/
+│   └── Shared/
+├── wwwroot/              # Static files (CSS, JS)
+├── CLAUDE.md            # Project documentation
+├── bin/                 # Build output (generated)
+└── obj/                 # Build artifacts (generated)
 ```
 
 ## Technical Stack
@@ -56,7 +147,18 @@ HelloConsole/
 
 ### Dependencies
 
-[List of deps]
+**Minimal PoC Dependencies:**
+```xml
+<!-- Core web functionality (built-in) -->
+<PackageReference Include="Microsoft.AspNetCore.Mvc" />
+
+<!-- Testing dependencies -->
+<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+<PackageReference Include="xunit" Version="2.6.1" />
+<PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+<PackageReference Include="FluentAssertions" Version="6.12.0" />
+<PackageReference Include="coverlet.collector" Version="6.0.0" />
+```
 
 ## Code Style Guidelines
 
@@ -171,3 +273,18 @@ dotnet test --no-build           # Test without rebuilding
 - ~5 minutes per cycle
 - Keep tests small and focused on core behavior
 - Prioritize working code over perfection for POCs
+
+### Testing Scenarios Covered
+
+- **Piped Input**: `echo "test" | dotnet run` → Graceful exit with warning
+- **Empty Input Loops**: Consecutive empty inputs → Exit after 10 attempts  
+- **Failed Username**: Invalid username attempts → Exit after 5 attempts
+- **Hanging Input**: No user input → Timeout after 30 seconds
+- **User Interruption**: Ctrl+C → Clean cancellation and exit
+
+### Error Handling Philosophy
+
+- **Fail Fast**: Detect problematic scenarios early and exit gracefully
+- **User Feedback**: Clear messages explaining why the application is exiting
+- **Resource Cleanup**: Proper disposal and cancellation token usage
+- **Defensive Programming**: Assume input can be malformed or missing

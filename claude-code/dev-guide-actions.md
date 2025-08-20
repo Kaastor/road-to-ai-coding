@@ -272,11 +272,10 @@ claude "Update @CLAUDE.md with current project folder structure, new commands an
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 2: Basic Web Interface (3-4 iterations)
-  4. Create HTML templates for user registration/login
-   forms
-  5. Add post creation and viewing web pages
-  6. Implement basic CSS for minimal styling
-  7. Add navigation between pages
+claude "Develop following part of the application from Phase 1: Basic Console Chat Setup
+**Goal**: Establish project foundation
+- Create basic console app structure
+- Implement username collection on startup
+- Basic message input/output loop
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
