@@ -156,31 +156,7 @@ claude "Given this project context: [paste relevant sections from claude.md], he
 
 ---
 
-
 # Flow
-
-## Meta
-- Use Grok to generate tech stack for the application
-```
-For above application give me:
-- python minimal stack for development (fastapi)
-```
-
-```
-For above application give me list of steps in wchich order I should implement this application to fullfill requirements.
-```
-
-
-````markdown
-# Flow
-
-## Meta
-- Use Grok to generate tech stack for the application.
-
-### Requests
-- For the above application, provide:
-  - Python minimal stack for development (FastAPI).
-- For the above application, provide a list of steps in which order I should implement this application to fulfill requirements.
 
 ## Dev
 
@@ -188,6 +164,12 @@ For above application give me list of steps in wchich order I should implement t
 ```bash
 claude --dangerously-skip-permissions
 ````
+
+- fill project information in CLAUDE.md
+- Ask him to prepare a development plan
+- Ask him to prepare basic folder structure
+- Ask him to choose minimal dependencies
+- Update CLAUDE.md
 
 ### Run your first Claude Code command
 
@@ -272,6 +254,17 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 
 ### Workbook
+
+```bash
+claude "Create a implementation plan for this 'Project Overview' locatecd in @CLAUDE.md.
+- I want to have modular plan that will allow to work in small iterative steps.
+- This is Proof of Concept application not production ready app.
+- Include minimal necessary dependencies needed to develop the project
+```
+
+```bash
+claude "Update @CLAUDE.md with current project folder structure, new commands and dependencies"
+```
 
 ```bash
 claude "Develop following part of the application from Phase 2: Basic Web Interface (3-4 iterations)
