@@ -265,16 +265,19 @@ claude "Create a implementation plan for this 'Project Overview' locatecd in @CL
 - I want to have modular plan that will allow to work in small iterative steps.
 - This is Proof of Concept application not production ready app.
 - Include necessary dependencies needed to develop the project, if you do not have to implement something, use a library
+  Choose lightweight and well known libraries
 ```
 
 ```bash
-claude "Update @CLAUDE.md with current project folder structure, new commands and dependencies"
+claude "Update @CLAUDE.md with current project folder structure, any new commands and dependencies"
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 2:
-Document Management - Create sample markdown docs and document loader
-Create minimal tests and at the end of your work summarize what you did and why."
+claude "Develop following part of the application from Phase 3:
+- Embedding Pipeline - HuggingFace embeddings with simple vector storage
+- Document indexing and basic vector similarity search
+Create minimal tests and at the end of your work quickly summarize what you did and why and
+what was not accomplished if that is the case."
 ```
 
 ```bash

@@ -24,6 +24,22 @@ class Document:
         """Generate a unique document ID from source path."""
         return Path(source).stem
     
+    @property
+    def file_path(self) -> Path:
+        """Get the file path as a Path object."""
+        return Path(self.source)
+    
+    @property
+    def title(self) -> str:
+        """Extract title from document content or use filename."""
+        lines = self.content.split('\n')
+        for line in lines:
+            line = line.strip()
+            if line.startswith('# '):
+                return line[2:].strip()
+        # Fallback to filename without extension
+        return self.file_path.stem.replace('_', ' ').replace('-', ' ').title()
+    
     def __repr__(self) -> str:
         return f"Document(doc_id='{self.doc_id}', source='{self.source}', length={len(self.content)})"
 

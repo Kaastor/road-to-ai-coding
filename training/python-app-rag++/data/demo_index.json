@@ -1,0 +1,37 @@
+{
+  "documents": [
+    {
+      "title": "Introduction to AI",
+      "content": "AI is transforming technology...",
+      "source": "intro_ai.md",
+      "id": 0
+    },
+    {
+      "title": "Machine Learning Basics",
+      "content": "ML is a subset of AI...",
+      "source": "ml_basics.md",
+      "id": 1
+    },
+    {
+      "title": "Deep Learning",
+      "content": "Deep learning uses neural networks...",
+      "source": "deep_learning.md",
+      "id": 2
+    },
+    {
+      "title": "Natural Language Processing",
+      "content": "NLP helps computers understand text...",
+      "source": "nlp.md",
+      "id": 3
+    },
+    {
+      "title": "Computer Vision",
+      "content": "CV enables machines to see...",
+      "source": "cv.md",
+      "id": 4
+    }
+  ],
+  "next_id": 5,
+  "dimension": 384,
+  "index_type": "flat"
+}

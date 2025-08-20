@@ -1,0 +1,111 @@
+{
+  "documents": [
+    {
+      "source_file": "docs/bm25_search.md",
+      "title": "BM25 Search",
+      "chunk_index": 0,
+      "chunk_text": "# BM25 Search\n\nBM25 (Best Matching 25) is a ranking function used in information retrieval to estimate the relevance of documents to a given search query.\n\n## Algorithm Overview\n\nBM25 builds upon the TF-IDF (Term Frequency-Inverse Document Frequency) concept but includes additional parameters to handle document length normalization and term frequency saturation.",
+      "char_count": 364,
+      "id": 0
+    },
+    {
+      "source_file": "docs/bm25_search.md",
+      "title": "BM25 Search",
+      "chunk_index": 1,
+      "chunk_text": "normalization and term frequency saturation. ### Key Parameters\n- **k1**: Controls term frequency normalization (typically 1.2-2.0)\n- **b**: Controls document length normalization (typically 0.75)\n\n## Formula\nThe BM25 score for a document D given query Q is calculated using term frequencies, document lengths, and collection statistics.\n\n## Advantages\n- Handles varying document lengths well\n- More robust than simple TF-IDF\n- Proven effectiveness in many domains\n- Fast computation and indexing",
+      "char_count": 496,
+      "id": 1
+    },
+    {
+      "source_file": "docs/bm25_search.md",
+      "title": "BM25 Search",
+      "chunk_index": 2,
+      "chunk_text": "in many domains\n- Fast computation and indexing\n\n ## Limitations\n- Purely lexical matching (no semantic understanding)\n- Requires exact term matches\n- May miss synonyms or related concepts\n\n## Hybrid Approaches\nCombining BM25 with vector search provides:\n- Lexical precision from BM25\n- Semantic understanding from embeddings\n- Better overall retrieval performance",
+      "char_count": 364,
+      "id": 2
+    },
+    {
+      "source_file": "docs/vector_embeddings.md",
+      "title": "Vector Embeddings",
+      "chunk_index": 0,
+      "chunk_text": "# Vector Embeddings\n\nVector embeddings are numerical representations of text that capture semantic meaning in high-dimensional space.\n\n## How They Work\n\nText is converted into dense vectors where similar concepts are positioned closer together in the vector space.\n\n### Popular Models\n- **Sentence-BERT**: Efficient for sentence-level embeddings\n- **all-MiniLM-L6-v2**: Fast and lightweight model\n- **text-embedding-ada-002**: OpenAI's embedding model",
+      "char_count": 451,
+      "id": 3
+    },
+    {
+      "source_file": "docs/vector_embeddings.md",
+      "title": "Vector Embeddings",
+      "chunk_index": 1,
+      "chunk_text": "OpenAI's embedding model ## Applications\nVector embeddings enable:\n- Semantic search\n- Document similarity\n- Question answering\n- Recommendation systems\n\n## Storage Options\n- FAISS: Facebook's similarity search library\n- Chroma: Open-source embedding database\n- Pinecone: Managed vector database service\n\n## Best Practices\n1. Choose appropriate model for your domain\n2. Consider embedding dimensionality vs performance\n3. Implement proper chunking strategies\n4. Use hybrid search for better results",
+      "char_count": 498,
+      "id": 4
+    },
+    {
+      "source_file": "docs/feedback_systems.md",
+      "title": "Feedback Systems in RAG",
+      "chunk_index": 0,
+      "chunk_text": "# Feedback Systems in RAG\n\nFeedback systems allow RAG applications to improve over time by learning from user interactions and preferences.\n\n## Types of Feedback\n\n### Explicit Feedback\n- Thumbs up/down ratings\n- Relevance scores (1-5 stars)\n- Binary helpful/not helpful\n\n### Implicit Feedback\n- Click-through rates\n- Time spent reading\n- Follow-up questions\n\n## Implementation Strategies",
+      "char_count": 387,
+      "id": 5
+    },
+    {
+      "source_file": "docs/feedback_systems.md",
+      "title": "Feedback Systems in RAG",
+      "chunk_index": 1,
+      "chunk_text": "questions\n\n## Implementation Strategies ### Online Learning\nReal-time updates to ranking models based on feedback:\n- Immediate score adjustments\n- Gradient-based updates\n- Reinforcement learning approaches\n\n### Batch Processing\nPeriodic model retraining:\n- Collect feedback over time\n- Retrain ranking models\n- A/B testing for improvements\n\n## Feedback Integration\n\n### Document Scoring\nAdjust document relevance scores based on historical feedback for similar queries.",
+      "char_count": 469,
+      "id": 6
+    },
+    {
+      "source_file": "docs/feedback_systems.md",
+      "title": "Feedback Systems in RAG",
+      "chunk_index": 2,
+      "chunk_text": "on historical feedback for similar queries. ### Re-ranking Models\nTrain specialized models to reorder search results using feedback signals.\n\n### Query Understanding\nUse feedback to improve query interpretation and expansion.\n\n## Challenges\n- Cold start problem for new documents\n- Feedback sparsity\n- Bias in user feedback\n- Balancing exploration vs exploitation",
+      "char_count": 363,
+      "id": 7
+    },
+    {
+      "source_file": "docs/api_design.md",
+      "title": "API Design for RAG Systems",
+      "chunk_index": 0,
+      "chunk_text": "# API Design for RAG Systems\n\nWell-designed APIs are crucial for RAG systems to provide reliable, scalable, and user-friendly interfaces.\n\n## Core Endpoints\n\n### Query Endpoint: POST /ask\nPrimary interface for asking questions:\n```json\n{\n  \"query\": \"What is vector similarity search?\",\n  \"max_results\": 5,\n  \"include_sources\": true\n}\n```\n\nResponse includes:\n- Generated answer\n- Source documents with citations\n- Confidence scores\n- Performance metrics",
+      "char_count": 452,
+      "id": 8
+    },
+    {
+      "source_file": "docs/api_design.md",
+      "title": "API Design for RAG Systems",
+      "chunk_index": 1,
+      "chunk_text": "Confidence scores\n- Performance metrics ### Feedback Endpoint: POST /feedback\nCollect user feedback for continuous improvement:\n```json\n{\n  \"query_id\": \"uuid-123\",\n  \"document_id\": \"doc-456\", \n  \"feedback\": \"positive\",\n  \"relevance_score\": 4\n}\n```\n\n### Metrics Endpoint: GET /metrics\nMonitor system performance:\n- Response latencies (p50, p95)\n- Hit rates at different k values\n- Token usage statistics\n- User satisfaction scores\n\n## Design Principles",
+      "char_count": 451,
+      "id": 9
+    },
+    {
+      "source_file": "docs/api_design.md",
+      "title": "API Design for RAG Systems",
+      "chunk_index": 2,
+      "chunk_text": "User satisfaction scores\n\n## Design Principles ### Consistency\n- Standardized response formats\n- Consistent error handling\n- Predictable behavior\n\n### Performance\n- Async processing for long queries\n- Caching for frequent requests\n- Streaming for real-time updates\n\n### Observability\n- Request tracing\n- Performance monitoring  \n- Error logging and alerting",
+      "char_count": 357,
+      "id": 10
+    },
+    {
+      "source_file": "docs/introduction.md",
+      "title": "Introduction to RAG Systems",
+      "chunk_index": 0,
+      "chunk_text": "# Introduction to RAG Systems\n\nRetrieval-Augmented Generation (RAG) is a powerful technique that combines information retrieval with large language models to provide accurate, contextual responses based on external knowledge sources.\n\n## Key Components\n\n### Document Storage\nRAG systems typically store documents in a searchable format, often using vector embeddings to capture semantic meaning.",
+      "char_count": 395,
+      "id": 11
+    },
+    {
+      "source_file": "docs/introduction.md",
+      "title": "Introduction to RAG Systems",
+      "chunk_index": 1,
+      "chunk_text": "vector embeddings to capture semantic meaning. ### Retrieval Process\nWhen a user asks a question, the system:\n1. Converts the query to embeddings\n2. Searches for relevant documents\n3. Ranks results by relevance\n\n### Generation\nThe retrieved documents are then used as context for a language model to generate a comprehensive answer.\n\n## Benefits\n- Access to up-to-date information\n- Reduced hallucinations\n- Traceable sources\n- Domain-specific knowledge integration",
+      "char_count": 465,
+      "id": 12
+    }
+  ],
+  "next_id": 13,
+  "dimension": 12,
+  "index_type": "flat"
+}
