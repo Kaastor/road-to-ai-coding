@@ -1,81 +1,130 @@
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-Project description: https://raw.githubusercontent.com/florinpop17/app-ideas/refs/heads/master/Projects/3-Advanced/Elevator-App.md (do not use this, it's just doc for developer)
 
 ## Project Overview
-Simple .NET 8.0 console application that outputs "Hello, World!" - serves as a basic template for C# console applications.
+[Brief description of what this project does and its main purpose]
 
-## Build & Test Commands
+[Optional: MVP/Phase approach if project is being built incrementally]
 
-### Prerequisites
-- .NET SDK **8.0** installed (verify with `dotnet --version`)
-- (Optional) `global.json` at the repo root to pin SDK 8.0
+## User Stories / Requirements
 
-### Restore & Build
-- Restore packages: `dotnet restore`
-- Build (debug): `dotnet build`
-- Build (release): `dotnet build -c Release`
-- Run application: `dotnet run`
-- Format code: `dotnet format`
+-   [ ] [Key user requirement 1]
+-   [ ] [Key user requirement 2]
+-   [ ] [Key user requirement 3]
 
-### Testing (xUnit recommended)
-- **All tests**: `dotnet test`
-- **Collect coverage** (with `coverlet.collector`):  
-  `dotnet test /p:CollectCoverage=true`
-- **Single test** (exact method):  
-  `dotnet test --filter "FullyQualifiedName=ElevatorApp.Tests.Unit.MyTests.My_method_should_do_x"`
-- **By display name contains**:  
-  `dotnet test --filter "DisplayName~should_do_x"`
-- **Watch mode** (fast feedback): `dotnet watch test`
+## Bonus features / Future Enhancements
+
+-   [ ] [Optional feature 1]
+-   [ ] [Optional feature 2]
+-   [ ] [Optional feature 3]
+
+## Technical Stack
+
+- **.NET SDK**: **8.0** (verify with `dotnet --version`)
+- **Language**: **C# 12**
+- **Project type**: [Console/Web/Library/etc.]
+- **Package management**: **NuGet** (`PackageReference` in `.csproj`)
+- **Testing**: **xUnit** + **FluentAssertions**
 
 ## Project Structure
 
 ```
-HelloConsole/
-├── HelloConsole.csproj    # Project file
-├── Program.cs             # Main application entry point
-├── CLAUDE.md             # Project documentation
-├── bin/                  # Build output (generated)
-└── obj/                  # Build artifacts (generated)
+{ProjectName}/
+├── {ProjectName}.csproj     # Main project file
+├── Program.cs               # Application entry point
+├── Models/                  # Domain models (if applicable)
+├── Services/                # Business logic (if applicable)
+├── Controllers/             # Web controllers (web projects only)
+├── Views/                   # Razor views (web projects only)
+├── wwwroot/                 # Static files (web projects only)
+├── tests/                   # Test projects directory
+│   └── {ProjectName}.Tests/ # Main test project
+│       ├── {ProjectName}.Tests.csproj
+│       ├── Models/          # Model tests (if applicable)
+│       ├── Services/        # Service tests (if applicable)
+│       └── Controllers/     # Controller tests (if applicable)
+├── bin/                     # Build output (generated)
+├── obj/                     # Build artifacts (generated)
+└── CLAUDE.md               # Project documentation
 ```
 
-## Technical Stack
+## Build & Test Commands
 
-- **.NET SDK**: **8.0**
-- **Language**: **C# 12**
-- **Project config**: `.csproj` (+ `Directory.Build.props` for shared settings)
-- **Environment**:
-  - Development secrets: `dotnet user-secrets` (for non-production)
-  - Configuration via `appsettings*.json` + environment variables
-- **Package management**: **NuGet** (`PackageReference` in `.csproj`)
-- **Dependencies**:
-  - Runtime deps in `src/*/*.csproj`
-  - Dev-only (analyzers, test libs) marked with `<PrivateAssets>all</PrivateAssets>`
-- **Project layout**: `src/` for product code, `tests/` for test projects
+### Essential Commands
+```bash
+# Initial setup
+dotnet restore                    # First time only
 
-### Dependencies
+# Fast development (recommended)
+dotnet watch run                  # Auto-rebuild + rerun on file changes
+dotnet watch test                 # Auto-rerun tests on changes
 
-[List of deps]
+# Manual commands
+dotnet build                      # Build project
+dotnet test                       # Run all tests
+dotnet run                        # Run application
+dotnet format                     # Format code
+```
+
+### Performance Optimizations
+```bash
+# Skip operations when unchanged
+dotnet build --no-restore        # Skip restore if packages unchanged
+dotnet test --no-build           # Skip build if already built
+dotnet build -m                  # Parallel build (use all CPU cores)
+
+# Targeted testing
+dotnet test --filter "DisplayName~should_do_x"    # Filter tests by name
+dotnet test /p:CollectCoverage=true              # Collect coverage
+```
+
+## Test Project Configuration
+
+**IMPORTANT**: Main project must exclude test files to prevent build conflicts:
+
+```xml
+<!-- Add to main {ProjectName}.csproj -->
+<ItemGroup>
+  <Compile Remove="tests/**/*" />
+</ItemGroup>
+```
+
+**Test project dependencies** (`tests/{ProjectName}.Tests/{ProjectName}.Tests.csproj`):
+```xml
+<ItemGroup>
+  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+  <PackageReference Include="xunit" Version="2.6.1" />
+  <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  <PackageReference Include="FluentAssertions" Version="6.12.0" />
+  <PackageReference Include="coverlet.collector" Version="6.0.0" />
+  
+  <!-- Add for web projects -->
+  <!-- <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" /> -->
+</ItemGroup>
+
+<ItemGroup>
+  <ProjectReference Include="../../{ProjectName}.csproj" />
+</ItemGroup>
+```
+
+**Why**: .NET SDK automatically includes all `.cs` files. Test files have different dependencies (xUnit, FluentAssertions) unavailable to the main project, causing build failures.
+
+## Implementation Plan
+[Plan]
 
 ## Code Style Guidelines
 
 - **Naming**:
   - **PascalCase**: classes, records, structs, enums, methods, public properties
   - **camelCase**: local variables & parameters
-  - **_camelCase**: private fields (prefer `readonly` where possible)
+  - **_camelCase**: private fields (prefer `readonly`)
   - **I** prefix for interfaces (e.g., `IService`)
-- **Docs**: XML doc comments `///` for public APIs; keep summaries concise
 - **Files**: Prefer **file-scoped namespaces**; one public type per file
-- **Nullability**: `<Nullable>enable</Nullable>` in all projects; no `#nullable disable`
+- **Nullability**: `<Nullable>enable</Nullable>` in all projects
 - **Async**: Use `async/await`, return `Task`/`Task<T>`; suffix async methods with `Async`
 - **Function length**: Keep methods focused and short (≈ ≤ 30 lines)
 - **Formatting**: Enforced via `.editorconfig` + `dotnet format`
-- **Analyzers**:
-  - Enable built-in: `<EnableNETAnalyzers>true</EnableNETAnalyzers>`
-  - `<AnalysisLevel>latest</AnalysisLevel>`
-  - Consider `StyleCop.Analyzers` for stricter style rules
-- **Warnings**: Treat as errors in CI: `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`
 
 ## C# / .NET Best Practices
 
@@ -84,16 +133,13 @@ HelloConsole/
 - **Pattern matching**: Use `switch` expressions & property patterns for clarity
 - **Guard clauses**: `ArgumentNullException.ThrowIfNull(arg, nameof(arg));`
 - **IDisposable**: Use `using`/`await using` blocks; prefer dependency injection for lifetimes
-- **Logging**: Use `Microsoft.Extensions.Logging.ILogger<T>`; structured logs (`logger.LogInformation("Processed {Count}", count);`)
-- **Configuration**: Bind strongly-typed options with validation:
-  - `services.AddOptions<MyOptions>().Bind(config.GetSection("My")).ValidateDataAnnotations().ValidateOnStart();`
+- **Logging**: Use `Microsoft.Extensions.Logging.ILogger<T>`; structured logs
 - **Error handling**: Throw specific exceptions; catch narrowly; include context in messages
 - **Concurrency**: Prefer `async` APIs; avoid blocking (`.Result`, `.Wait()`); use `CancellationToken`
 - **Security**:
   - Validate all inputs
-  - Never log secrets or PII
+  - Never log secrets or PII  
   - Store secrets in user-secrets/env/secret manager (not in repo)
-- **Performance** (when needed): minimize allocations, use `Span<T>`/`Memory<T>` carefully, pool where it matters
 
 ## Development Patterns & Best Practices
 
@@ -103,71 +149,42 @@ HelloConsole/
 - **File size**: Keep files under ~300 lines; refactor once they grow past that
 - **Modular design**: Small, testable services/components; depend on abstractions
 - **Dependency Injection**: Use built-in DI; prefer constructor injection
-- **Logging**: Reasonable log levels (Debug/Information/Warn/Error); no noisy loops
-- **Configuration**: Hierarchy = `appsettings.json` < `appsettings.{Environment}.json` < Environment Variables < User Secrets (dev)
 
 ## Testing Strategy
 
-- **Framework**: **xUnit**
-- **Assertions**: Prefer **FluentAssertions** for readability
+- **Framework**: **xUnit** + **FluentAssertions**
 - **Mocking**: **Moq** or **NSubstitute**; mock external dependencies only
-- **Structure**:
-  - Unit tests in `tests/ProjectName.Tests`
-  - Naming: `MethodName_Should_ExpectedBehavior_When_Condition`
-- **Parameterized (“table-driven”)**:
-  - Use `[Theory]` with `[InlineData]` / `[MemberData]`
-- **Integration tests**:
-  - For ASP.NET Core: `WebApplicationFactory<TEntryPoint>`
-  - Use test containers/in-memory providers where applicable
-- **Coverage**:
-  - Add `coverlet.collector` to test project
-  - Run: `dotnet test /p:CollectCoverage=true`
-- **Don’ts**: Don’t assert private implementation details; verify observable behavior
+- **Structure**: Unit tests in `tests/{ProjectName}.Tests`
+- **Naming**: `MethodName_Should_ExpectedBehavior_When_Condition`
+- **Parameterized**: Use `[Theory]` with `[InlineData]` / `[MemberData]`
+- **Integration tests**: For ASP.NET Core use `WebApplicationFactory<TEntryPoint>`
+- **Don'ts**: Don't assert private implementation details; verify observable behavior
 
 ## Core Workflow
-- After a set of changes: `dotnet build` (no warnings), `dotnet test` (targeted tests)
+- After changes: `dotnet build` (no warnings), `dotnet test` (targeted tests)
 - Prefer running **single tests** with `--filter` for speed during iteration
 - Run `dotnet format` before committing
+- Use **watch mode** (`dotnet watch run/test`) to eliminate manual build/run cycles
 
-## ⚡ Optimized Development Workflow
+## Error Handling Philosophy
+[Optional: Delete this section if not relevant to your project type]
 
-### Initial Setup (Once)
-```bash
-dotnet restore                    # First time only
-```
+- **Fail Fast**: Detect problematic scenarios early and exit gracefully
+- **User Feedback**: Clear messages explaining why the application is exiting
+- **Resource Cleanup**: Proper disposal and cancellation token usage
+- **Defensive Programming**: Assume input can be malformed or missing
 
-### Fast Development Cycle (Use These!)
-```bash
-# Method 1: Watch Mode (RECOMMENDED - fully automated)
-dotnet watch run                  # Auto-rebuild + rerun on file changes
-# OR for testing:
-dotnet watch test                 # Auto-rerun tests on changes
+## Project-Specific Notes
+[Optional: Add any project-specific configuration, constraints, or requirements here]
 
-# Method 2: Manual Fast Commands (when watch mode not suitable)
-dotnet build --no-restore        # Build only (skip restore)
-dotnet run --no-build            # Run without rebuilding
-dotnet test --no-build           # Test without rebuilding
-```
-
-### Performance Tips
-- **Use watch mode**: `dotnet watch run` eliminates manual build/run cycles
-- **Skip restore**: Add `--no-restore` when packages haven't changed
-- **Skip build**: Add `--no-build` when code hasn't changed
-- **Parallel builds**: Add `-m` for multi-core compilation
-- **Target specific**: Use `--filter` for single test execution
-
-### Project Configuration Benefits
-- **Shared compilation**: Reuses compiler process across builds (faster)
-- **Parallel builds**: Uses all CPU cores automatically
-- **Incremental restore**: Skips unchanged packages
-- **Debug optimizations**: Faster debug builds, slower runtime
-
-## Implementation Priority
-1. Core functionality first (domain logic, state)
-2. User interactions / I/O (only minimal working functionality)
-3. Minimal, focused unit tests covering the core paths
-
-### Iteration Target
-- ~5 minutes per cycle
-- Keep tests small and focused on core behavior
-- Prioritize working code over perfection for POCs
+<!-- Template Usage Instructions:
+1. Replace all {ProjectName} placeholders with your actual project name
+2. Fill in the Project Overview section with your project description
+3. Update User Stories/Requirements with your actual requirements
+4. Modify Technical Stack section to match your specific technology choices
+5. Adjust Project Structure to match your actual folder organization
+6. Update Implementation Plan if using phased development approach
+7. Add any project-specific notes in the final section
+8. Delete optional sections marked with [Optional: ...] if not needed
+9. Delete these template instructions before using
+-->

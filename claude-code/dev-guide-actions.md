@@ -272,10 +272,15 @@ claude "Update @CLAUDE.md with current project folder structure, new commands an
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 1: Basic Console Chat Setup
-**Goal**: Establish project foundation
-- Create basic console app structure
-- Implement username collection on startup
-- Basic message input/output loop
+claude "Develop following part of the application from Phase 2: Message Storage & Display
+**Goal**: Core chat logic
+- Create `Message` record class
+- Implement `IChatService` interface
+- Add in-memory message storage
+- Format messages as "Username: Message"
 Create minimal tests and at the end of your work summarize what you did and why."
+```
+
+```bash
+claude "Check if your changes are aligned with overall Project goals and are moving the development in completion direction."
 ```
