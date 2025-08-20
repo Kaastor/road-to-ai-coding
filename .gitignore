@@ -24,3 +24,4 @@ gen
 
 **/node_modules/
 **/dist/
+training/python-app-rag++/.env.example

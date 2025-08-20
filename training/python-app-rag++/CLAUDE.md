@@ -24,6 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Using poetry
 - Install dependencies: `poetry install`
+- Run development server: `poetry run uvicorn app.app:app --reload`
 
 ### Testing
 # all tests
@@ -36,6 +37,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Structure
 
 ```
+training-python-app-rag++/
+├── app/
+│   ├── __init__.py
+│   ├── app.py              # FastAPI application entry point
+│   ├── models/             # Data models and schemas
+│   ├── services/           # Business logic (embeddings, search, LLM)
+│   ├── utils/              # Helper utilities
+│   └── tests/
+│       ├── __init__.py
+│       ├── test_app.py     # API endpoint tests
+│       ├── test_services/  # Service layer tests
+│       └── fixtures/       # Test data and fixtures
+├── docs/                   # Sample markdown documents (20-50 files)
+├── data/                   # Generated embeddings and indices (gitignored)
+├── pyproject.toml          # Poetry configuration and dependencies
+├── pytest.ini             # Pytest configuration
+├── .env.example           # Environment variables template
+├── .gitignore
+└── CLAUDE.md              # This file
 ```
 
 ## Technical Stack
@@ -43,13 +63,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Python version**: Python 3.11
 - **Project config**: `pyproject.toml` for configuration and dependency management
 - **Environment**: Use virtual environment in `.venv` for dependency isolation
-- **Package management**: Use `poetry install` for faster
+- **Package management**: Use `poetry install` for faster dependency management
 - **Dependencies**: Separate production and dev dependencies in `pyproject.toml`
-- **Project layout**: Standard Python package layout
+- **Project layout**: Standard Python package layout with FastAPI structure
 
 ### Dependencies
 
-[List of deps]
+#### Production Dependencies
+- `fastapi` ^0.104.0 - Web framework for building APIs
+- `uvicorn` ^0.24.0 - ASGI server for FastAPI
+- `sentence-transformers` ^2.2.2 - HuggingFace embeddings
+- `numpy` ^1.24.0 - Numerical operations for vectors
+- `rank-bm25` ^0.2.2 - BM25 keyword search implementation
+- `anthropic` ^0.7.0 - Claude API client for LLM integration
+- `python-dotenv` ^1.0.0 - Environment variable management
+
+#### Development Dependencies
+- `pytest` ^8.0.0 - Testing framework
+- `httpx` - HTTP client for testing FastAPI endpoints
 
 ## Code Style Guidelines
 
