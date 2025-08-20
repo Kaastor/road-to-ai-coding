@@ -1,24 +1,33 @@
 package com.example.hello;
 
+import com.example.instagram.model.Post;
 import com.example.instagram.model.User;
+import com.example.instagram.repository.InMemoryPostRepository;
 import com.example.instagram.repository.InMemoryUserRepository;
+import com.example.instagram.repository.PostRepository;
 import com.example.instagram.repository.UserRepository;
 import com.example.instagram.service.AuthenticationService;
+import com.example.instagram.service.PostService;
 import com.example.instagram.service.UserService;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class InstagramCli {
     private final UserService userService;
     private final AuthenticationService authService;
+    private final PostService postService;
     private final Scanner scanner;
     private String currentSessionId;
     
     public InstagramCli() {
         UserRepository userRepository = new InMemoryUserRepository();
+        PostRepository postRepository = new InMemoryPostRepository();
         this.userService = new UserService(userRepository);
         this.authService = new AuthenticationService(userRepository);
+        this.postService = new PostService(postRepository, userRepository);
         this.scanner = new Scanner(System.in);
         this.currentSessionId = null;
     }
@@ -68,14 +77,18 @@ public class InstagramCli {
         }
         
         System.out.println("1. View Profile");
-        System.out.println("2. Logout");
+        System.out.println("2. Create Post");
+        System.out.println("3. View My Posts");
+        System.out.println("4. Logout");
         System.out.print("Choose an option: ");
         
         String choice = scanner.nextLine().trim();
         
         switch (choice) {
             case "1" -> handleViewProfile();
-            case "2" -> handleLogout();
+            case "2" -> handleCreatePost();
+            case "3" -> handleViewMyPosts();
+            case "4" -> handleLogout();
             default -> System.out.println("Invalid option. Please try again.");
         }
     }
@@ -139,6 +152,67 @@ public class InstagramCli {
             authService.logout(currentSessionId);
             currentSessionId = null;
             System.out.println("Logged out successfully!");
+        }
+    }
+    
+    private void handleCreatePost() {
+        Optional<User> currentUser = authService.getCurrentUser(currentSessionId);
+        if (currentUser.isEmpty()) {
+            System.out.println("Error: Could not retrieve user information.");
+            handleLogout();
+            return;
+        }
+        
+        System.out.println("\n--- Create New Post ---");
+        System.out.println("Enter your post content (max 2200 characters):");
+        String content = scanner.nextLine().trim();
+        
+        if (content.isEmpty()) {
+            System.out.println("Post content cannot be empty.");
+            return;
+        }
+        
+        try {
+            Post post = postService.createPost(currentUser.get().id(), content);
+            System.out.println("Post created successfully!");
+            System.out.println("Post ID: " + post.id());
+            System.out.println("Content: " + post.content());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to create post: " + e.getMessage());
+        }
+    }
+    
+    private void handleViewMyPosts() {
+        Optional<User> currentUser = authService.getCurrentUser(currentSessionId);
+        if (currentUser.isEmpty()) {
+            System.out.println("Error: Could not retrieve user information.");
+            handleLogout();
+            return;
+        }
+        
+        System.out.println("\n--- My Posts ---");
+        try {
+            List<Post> posts = postService.getUserPosts(currentUser.get().id());
+            
+            if (posts.isEmpty()) {
+                System.out.println("You haven't created any posts yet.");
+                return;
+            }
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            System.out.println("Total posts: " + posts.size());
+            System.out.println();
+            
+            for (int i = 0; i < posts.size(); i++) {
+                Post post = posts.get(i);
+                System.out.println("Post #" + (i + 1));
+                System.out.println("Created: " + post.timestamp().atZone(java.time.ZoneId.systemDefault()).format(formatter));
+                System.out.println("Content: " + post.content());
+                System.out.println("Post ID: " + post.id());
+                System.out.println("-".repeat(50));
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to retrieve posts: " + e.getMessage());
         }
     }
 }
