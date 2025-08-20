@@ -37,7 +37,7 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 
 ### 1.6: Integration Testing (~5 min)
 - Create `UserIntegrationTest` testing full user flow
-- Test registration ’ login ’ profile view sequence
+- Test registration ï¿½ login ï¿½ profile view sequence
 - Verify data persistence within session
 - Ensure all user stories for authentication work
 
@@ -69,7 +69,7 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 
 ### 2.5: Post Integration Testing (~5 min)
 - Add post functionality to integration tests
-- Test: login ’ create post ’ view posts sequence
+- Test: login ï¿½ create post ï¿½ view posts sequence
 - Verify post-user relationships
 - Ensure post user stories work end-to-end
 
@@ -94,7 +94,7 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 - Test image information display
 
 ### 3.4: Image Integration Testing (~5 min)
-- Test complete flow: create post with image ’ view posts with images
+- Test complete flow: create post with image ï¿½ view posts with images
 - Verify image path storage and retrieval
 - Test error handling for missing images
 - Ensure image user stories work
@@ -126,7 +126,7 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 - Test enhanced profile functionality
 
 ### 4.5: Social Integration Testing (~5 min)
-- Test full social flow: follow user ’ view their profile ’ see posts
+- Test full social flow: follow user ï¿½ view their profile ï¿½ see posts
 - Verify follower/following relationships
 - Test unfollow functionality
 - Ensure all social user stories work
@@ -153,7 +153,7 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 
 ### 5.4: Final Integration & Polish (~5 min)
 - Comprehensive integration test covering all user stories
-- Test complete user journey: register ’ follow ’ post ’ view feed
+- Test complete user journey: register ï¿½ follow ï¿½ post ï¿½ view feed
 - Verify all 5 user stories from CLAUDE.md are working
 - Final manual testing and bug fixes
 
@@ -173,8 +173,8 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 - SLF4J logging for production readiness
 
 ## User Stories Mapping:
-1. **User registration/login** ’ Phase 1 (iterations 1.1-1.6)
-2. **Create posts with images** ’ Phase 2 + 3 (iterations 2.1-3.4)
-3. **User profile with uploaded images** ’ Phase 2 (iterations 2.1-2.5)
-4. **Follow other users** ’ Phase 4 (iterations 4.1-4.5)
-5. **See posts from followed users** ’ Phase 5 (iterations 5.1-5.4)
+1. **User registration/login** ï¿½ Phase 1 (iterations 1.1-1.6)
+2. **Create posts with images** ï¿½ Phase 2 + 3 (iterations 2.1-3.4)
+3. **User profile with uploaded images** ï¿½ Phase 2 (iterations 2.1-2.5)
+4. **Follow other users** ï¿½ Phase 4 (iterations 4.1-4.5)
+5. **See posts from followed users** ï¿½ Phase 5 (iterations 5.1-5.4)

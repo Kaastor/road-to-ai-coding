@@ -255,6 +255,12 @@ claude "Develop a part of this user story: [story] with corresponding unit tests
 claude "Develop a next part of current user story with corresponding minimal unit tests: [part]"
 ```
 
+```bash
+claude "Develop following part of the application: [part].
+Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective."
+```
+
+
 **User story examples**
 
 * Develop a part of this user story: \[By clicking the Generate password button, the user can see a password being generated] with corresponding minimal unit tests: \[Add a "Generate password" button to the UI.]

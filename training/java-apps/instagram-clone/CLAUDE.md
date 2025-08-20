@@ -131,3 +131,39 @@ Keep production and test dependencies separated in `pom.xml` using appropriate s
 - Keep tests simple, just core functionality checks
 - Prioritize working code over perfection for POCs
 
+## Implementation Plan (Compact)
+
+### Phase 1: Foundation & User Management (6 iterations)
+- **1.1:** Domain Models & Project Structure - User record, package structure, tests
+- **1.2:** User Repository Layer - CRUD interface, in-memory storage, tests  
+- **1.3:** User Service Layer - Registration logic, validation, business rules
+- **1.4:** Authentication System - Login/logout, session management, credential validation
+- **1.5:** CLI User Interface - Main class, registration/login commands, menu system
+- **1.6:** Integration Testing - Full user flow testing, end-to-end verification
+
+### Phase 2: Basic Post Management (5 iterations)
+- **2.1:** Post Domain Model - Post record, validation, creation logic
+- **2.2:** Post Repository - CRUD operations, user association, storage
+- **2.3:** Post Service - Business logic, content validation, user checks
+- **2.4:** CLI Post Features - Create/view commands, listing, timestamps
+- **2.5:** Post Integration Testing - Full post workflow verification
+
+### Phase 3: Image Handling & Storage (4 iterations)
+- **3.1:** Image Storage Foundation - ImageService interface, filesystem storage
+- **3.2:** Image Upload Simulation - CLI upload, path storage, validation
+- **3.3:** Image Display in CLI - Path display, metadata, details command
+- **3.4:** Image Integration Testing - Complete image workflow verification
+
+### Phase 4: Social Features (5 iterations)
+- **4.1:** Following Domain Model - Follow record, repository, operations
+- **4.2:** Follow Service Layer - Business logic, validation, relationship methods
+- **4.3:** CLI Social Features - Follow/unfollow commands, user search
+- **4.4:** User Profile Enhancement - Follower counts, profile views, stats
+- **4.5:** Social Integration Testing - Complete social workflow verification
+
+### Phase 5: Feed Generation & Advanced Features (4 iterations)
+- **5.1:** Feed Service - Personalized feeds, chronological ordering, generation logic
+- **5.2:** CLI Feed Interface - Feed display, author info, timestamps
+- **5.3:** Enhanced Feed Features - Pagination, user posts, activity indicators
+- **5.4:** Final Integration & Polish - Complete user journey testing, bug fixes
+
