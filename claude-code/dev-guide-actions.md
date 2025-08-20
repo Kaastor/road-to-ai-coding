@@ -279,9 +279,9 @@ claude "Refactor this code for better [performance/readability]: [code]"
 
 ```bash
 claude "Develop following part of the application from Phase 1:
--- Create `UserRepository` interface with CRUD operations
-- Implement `InMemoryUserRepository` with Map storage
-- Add UserRepositoryTest with save/find operations
-- Test storage and retrieval functionality
-Create minimal tests and at the end of your work summarize what you did and why this is important from project perspective."
+- Create `UserService` class with registration logic
+- Implement password validation and duplicate username checks
+- Add UserServiceTest covering registration scenarios
+- Test business logic isolation
+Create minimal tests and at the end of your work summarize what you did and why."
 ```
