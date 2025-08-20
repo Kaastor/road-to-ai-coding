@@ -154,11 +154,6 @@ claude "Create test helpers to reduce duplication in: [test files]"
 claude "Given this project context: [paste relevant sections from claude.md], help me with [specific task]"
 ```
 
-#### Problem: Outdated CLAUDE.md
-```bash
-claude "Update @CLAUDE.md with current project folder structure"
-```
-
 ---
 
 
@@ -242,6 +237,10 @@ claude --dangerously-skip-permissions
 claude "Update @CLAUDE.md with current project folder structure"
 ```
 
+```bash
+claude "Update @CLAUDE.md with current project folder structure and new commands"
+```
+
 ### Implementation flow
 
 ```bash
@@ -253,7 +252,7 @@ claude "Develop a next part of current user story with corresponding minimal uni
 ```
 
 ```bash
-claude "Create a implementation plan for this 'Project Overview' locatec in @CLAUDE.md.
+claude "Create a implementation plan for this 'Project Overview' locatecd in @CLAUDE.md.
 - I want to have modular plan that will allow to work in small iterative steps.
 - This is Proof of Concept application not production ready app.
 - Include minimal necessary dependencies needed to develop the project

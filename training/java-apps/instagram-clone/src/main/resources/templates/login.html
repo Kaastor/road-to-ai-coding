@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Instagram Clone</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/register">Register</a>
+        <a href="/login" class="active">Login</a>
+        <a href="/posts">Posts</a>
+        <a href="/api-docs">API Docs</a>
+    </div>
+    
+    <div class="form-container">
+        <h1>Sign In</h1>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="usernameOrEmail">Username or Email:</label>
+                <input type="text" id="usernameOrEmail" name="usernameOrEmail" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div id="message"></div>
+        
+        <div id="userInfo" style="display: none;" class="user-info">
+            <h3>Welcome!</h3>
+            <p><strong>Username:</strong> <span id="userUsername"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <button id="logoutBtn" class="logout-btn" style="width: 100%;">Logout</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/posts" style="color: #007bff; text-decoration: none;">Go to Posts →</a>
+            </div>
+        </div>
+        
+        <div class="register-link">
+            Don't have an account? <a href="/register">Sign up here</a>
+        </div>
+    </div>
+
+    <script>
+        let currentSessionId = localStorage.getItem('sessionId');
+        
+        // Check if already logged in
+        if (currentSessionId) {
+            checkCurrentUser();
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const usernameOrEmail = document.getElementById('usernameOrEmail').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            
+            try {
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ usernameOrEmail, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentSessionId = data.sessionId;
+                    localStorage.setItem('sessionId', currentSessionId);
+                    messageDiv.innerHTML = '<div class="success">Login successful!</div>';
+                    document.getElementById('loginForm').reset();
+                    checkCurrentUser();
+                } else {
+                    messageDiv.innerHTML = '<div class="error">' + (data.error || 'Login failed') + '</div>';
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="error">Network error. Please try again.</div>';
+            }
+        });
+        
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                await fetch('/api/users/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Session-Id': currentSessionId
+                    }
+                });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+            
+            localStorage.removeItem('sessionId');
+            currentSessionId = null;
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('message').innerHTML = '<div class="success">Logged out successfully.</div>';
+        });
+        
+        async function checkCurrentUser() {
+            try {
+                const response = await fetch('/api/users/me', {
+                    headers: {
+                        'Session-Id': currentSessionId
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    document.getElementById('userUsername').textContent = userData.username;
+                    document.getElementById('userEmail').textContent = userData.email;
+                    document.getElementById('userInfo').style.display = 'block';
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('message').innerHTML = '';
+                } else {
+                    localStorage.removeItem('sessionId');
+                    currentSessionId = null;
+                }
+            } catch (error) {
+                localStorage.removeItem('sessionId');
+                currentSessionId = null;
+            }
+        }
+    </script>
+</body>
+</html>
