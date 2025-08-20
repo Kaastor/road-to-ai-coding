@@ -272,12 +272,11 @@ claude "Update @CLAUDE.md with current project folder structure, new commands an
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 2: Message Storage & Display
-**Goal**: Core chat logic
-- Create `Message` record class
-- Implement `IChatService` interface
-- Add in-memory message storage
-- Format messages as "Username: Message"
+claude "Develop following part of the application from Phase 3: Web Interface Foundation
+- Set up ASP.NET Core web application
+- Create basic controller and views
+- Username prompt page/modal
+- Chat message display area
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
 
