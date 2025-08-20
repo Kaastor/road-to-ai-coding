@@ -178,3 +178,24 @@ Transform the current Hello World Java app into an Instagram clone backend with 
 3. **User profile with uploaded images** � Phase 2 (iterations 2.1-2.5)
 4. **Follow other users** � Phase 4 (iterations 4.1-4.5)
 5. **See posts from followed users** � Phase 5 (iterations 5.1-5.4)
+
+
+# UI Plan
+
+Phase 1: Web Foundation (2-3 iterations)
+  1. Add Spring Boot web dependencies (starter-web,
+  thymeleaf)
+  2. Create REST controllers for existing services
+  3. Configure Spring Boot application with web server
+
+  Phase 2: Basic Web Interface (3-4 iterations)
+  4. Create HTML templates for user registration/login
+   forms
+  5. Add post creation and viewing web pages
+  6. Implement basic CSS for minimal styling
+  7. Add navigation between pages
+
+  Phase 3: Testing & Polish (1-2 iterations)
+  8. End-to-end web interface testing
+  9. Error handling and user feedback
+  10. Final integration verification

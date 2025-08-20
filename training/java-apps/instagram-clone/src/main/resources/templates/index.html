@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .nav { background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+        .nav a:hover { text-decoration: underline; }
+        .content { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+        <a href="/posts">Posts</a>
+        <a href="/api-docs">API Docs</a>
+    </div>
+    
+    <div class="content">
+        <h1>Instagram Clone</h1>
+        <p>Welcome to the Instagram Clone web interface!</p>
+        
+        <h2>Available Features:</h2>
+        <ul>
+            <li><strong>User Registration:</strong> Create a new account with username, email, and password</li>
+            <li><strong>User Login:</strong> Authenticate with username/email and password</li>
+            <li><strong>Create Posts:</strong> Share content with other users</li>
+            <li><strong>View Posts:</strong> Browse posts from specific users</li>
+        </ul>
+        
+        <h2>Quick Start:</h2>
+        <ol>
+            <li><a href="/register">Register</a> a new account</li>
+            <li><a href="/login">Login</a> with your credentials</li>
+            <li><a href="/posts">Create and view posts</a></li>
+        </ol>
+        
+        <h2>API Endpoints:</h2>
+        <p><a href="/api-docs">View API Documentation</a> for REST API usage.</p>
+    </div>
+</body>
+</html>

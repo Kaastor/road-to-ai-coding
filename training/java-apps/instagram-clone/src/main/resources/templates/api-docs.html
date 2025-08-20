@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Instagram Clone</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .nav { background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+        .nav a:hover { text-decoration: underline; }
+        .endpoint { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .method { font-weight: bold; color: #28a745; }
+        .path { font-family: monospace; background: #e9ecef; padding: 2px 6px; border-radius: 3px; }
+        .example { background: #e9ecef; padding: 10px; border-radius: 3px; font-family: monospace; overflow-x: auto; }
+        h1, h2, h3 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+        <a href="/posts">Posts</a>
+        <a href="/api-docs">API Docs</a>
+    </div>
+    
+    <h1>Instagram Clone API Documentation</h1>
+    
+    <h2>User Management</h2>
+    
+    <div class="endpoint">
+        <h3><span class="method">POST</span> <span class="path">/api/users/register</span></h3>
+        <p>Register a new user account.</p>
+        <strong>Request Body:</strong>
+        <div class="example">
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "mypassword123"
+}
+        </div>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "id": "uuid-here",
+  "username": "johndoe",
+  "email": "john@example.com",
+  "message": "User registered successfully"
+}
+        </div>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method">POST</span> <span class="path">/api/users/login</span></h3>
+        <p>Login with username/email and password.</p>
+        <strong>Request Body:</strong>
+        <div class="example">
+{
+  "usernameOrEmail": "johndoe",
+  "password": "mypassword123"
+}
+        </div>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "sessionId": "session-uuid-here",
+  "message": "Login successful"
+}
+        </div>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method">GET</span> <span class="path">/api/users/me</span></h3>
+        <p>Get current user information (requires Session-Id header).</p>
+        <strong>Headers:</strong>
+        <div class="example">Session-Id: your-session-id-here</div>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "id": "uuid-here",
+  "username": "johndoe",
+  "email": "john@example.com"
+}
+        </div>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method">POST</span> <span class="path">/api/users/logout</span></h3>
+        <p>Logout user session.</p>
+        <strong>Headers:</strong>
+        <div class="example">Session-Id: your-session-id-here</div>
+    </div>
+    
+    <h2>Post Management</h2>
+    
+    <div class="endpoint">
+        <h3><span class="method">POST</span> <span class="path">/api/posts</span></h3>
+        <p>Create a new post (requires authentication).</p>
+        <strong>Headers:</strong>
+        <div class="example">Session-Id: your-session-id-here</div>
+        <strong>Request Body:</strong>
+        <div class="example">
+{
+  "content": "This is my first post!"
+}
+        </div>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "id": "post-uuid-here",
+  "userId": "user-uuid-here",
+  "content": "This is my first post!",
+  "createdAt": "2024-01-01T12:00:00Z",
+  "message": "Post created successfully"
+}
+        </div>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method">GET</span> <span class="path">/api/posts/user/{userId}</span></h3>
+        <p>Get all posts from a specific user.</p>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "posts": [
+    {
+      "id": "post-uuid-here",
+      "userId": "user-uuid-here",
+      "content": "This is my first post!",
+      "createdAt": "2024-01-01T12:00:00Z"
+    }
+  ],
+  "count": 1
+}
+        </div>
+    </div>
+    
+    <div class="endpoint">
+        <h3><span class="method">GET</span> <span class="path">/api/posts/my</span></h3>
+        <p>Get current user's posts (requires authentication).</p>
+        <strong>Headers:</strong>
+        <div class="example">Session-Id: your-session-id-here</div>
+        <strong>Response (Success):</strong>
+        <div class="example">
+{
+  "posts": [
+    {
+      "id": "post-uuid-here",
+      "userId": "user-uuid-here",
+      "content": "This is my first post!",
+      "createdAt": "2024-01-01T12:00:00Z"
+    }
+  ],
+  "count": 1
+}
+        </div>
+    </div>
+    
+    <h2>Error Responses</h2>
+    <p>All endpoints may return error responses in the following format:</p>
+    <div class="example">
+{
+  "error": "Error message describing what went wrong"
+}
+    </div>
+    
+    <h2>Testing with curl</h2>
+    <p>Example curl commands for testing the API:</p>
+    
+    <h3>Register a user:</h3>
+    <div class="example">
+curl -X POST http://localhost:8080/api/users/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","email":"test@example.com","password":"password123"}'
+    </div>
+    
+    <h3>Login:</h3>
+    <div class="example">
+curl -X POST http://localhost:8080/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{"usernameOrEmail":"testuser","password":"password123"}'
+    </div>
+    
+    <h3>Create a post:</h3>
+    <div class="example">
+curl -X POST http://localhost:8080/api/posts \
+  -H "Content-Type: application/json" \
+  -H "Session-Id: YOUR_SESSION_ID_HERE" \
+  -d '{"content":"Hello world!"}'
+    </div>
+</body>
+</html>

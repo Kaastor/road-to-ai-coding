@@ -253,7 +253,10 @@ claude "Develop a next part of current user story with corresponding minimal uni
 ```
 
 ```bash
-claude "Create a implementation plan for this 'Project Overview' locatec in @CLAUDE.md. I want to have modular plan that will allow to work in small iterative steps.
+claude "Create a implementation plan for this 'Project Overview' locatec in @CLAUDE.md.
+- I want to have modular plan that will allow to work in small iterative steps.
+- This is Proof of Concept application not production ready app.
+- Include minimal necessary dependencies needed to develop the project
 ```
 
 ```bash
@@ -267,22 +270,16 @@ Create minimal tests and at the end of your work summarize what you did and why 
 claude "Refactor this code for better [performance/readability]: [code]"
 ```
 
-**User story examples**
-
-* Develop a part of this user story: \[By clicking the Generate password button, the user can see a password being generated] with corresponding minimal unit tests: \[Add a "Generate password" button to the UI.]
-* Develop a next part of current user story with corresponding minimal unit tests: \[Set default length (e.g., 12) and enforce minimum/maximum limits (e.g., 8-50).]
-
-```
-```
 
 
 ### Workbook
 
 ```bash
-claude "Develop following part of the application from Phase 3:
-- Update Post model to include optional imagePath field
-- Create `ImageService` interface for future implementations
-- Implement `FileSystemImageService` for local storage
-- Add ImageServiceTest with mock file operations
+claude "Develop following part of the application from Phase 2: Basic Web Interface (3-4 iterations)
+  4. Create HTML templates for user registration/login
+   forms
+  5. Add post creation and viewing web pages
+  6. Implement basic CSS for minimal styling
+  7. Add navigation between pages
 Create minimal tests and at the end of your work summarize what you did and why."
 ```
