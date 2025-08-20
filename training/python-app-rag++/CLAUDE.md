@@ -42,6 +42,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # test vector storage
 `poetry run python -m pytest app/tests/test_services/test_vector_storage.py -v`
 
+# test BM25 search
+`poetry run python -m pytest app/tests/test_services/test_bm25_search.py -v`
+
+# test hybrid search
+`poetry run python -m pytest app/tests/test_services/test_hybrid_search.py -v`
+
+# test hybrid search integration
+`poetry run python -m pytest app/tests/test_services/test_document_indexer_hybrid.py -v`
+
 # integration tests
 `poetry run python -m pytest app/tests/test_integration.py -v`
 
@@ -63,15 +72,20 @@ training-python-app-rag++/
 │   │   ├── mock_embedding_service.py     # Mock embeddings for testing
 │   │   ├── adaptive_embedding_service.py # Auto-selecting embedding service
 │   │   ├── vector_storage.py       # FAISS vector similarity search
-│   │   └── document_indexer.py     # Complete indexing pipeline
+│   │   ├── bm25_search.py          # BM25 keyword search service
+│   │   ├── hybrid_search.py        # Hybrid BM25 + vector search with score fusion
+│   │   └── document_indexer.py     # Complete indexing pipeline with hybrid search
 │   └── tests/
 │       ├── test_app.py                        # API endpoint tests
 │       ├── test_integration.py                # End-to-end pipeline tests
 │       └── test_services/                     # Service layer tests
 │           ├── __init__.py
 │           ├── test_adaptive_embedding_service.py
+│           ├── test_bm25_search.py         # BM25 search functionality tests
+│           ├── test_document_indexer_hybrid.py # Hybrid search integration tests
 │           ├── test_document_indexer_lightweight.py
 │           ├── test_document_loader.py
+│           ├── test_hybrid_search.py       # Hybrid search service tests
 │           ├── test_mock_embedding_service.py
 │           ├── test_text_chunker.py
 │           ├── test_tfidf_embedding_service.py
@@ -151,8 +165,36 @@ training-python-app-rag++/
 - **Security best practices**: Follow input validation and data protection practices
 - **Performance**: Optimize critical code sections when necessary
 
+## Hybrid Search System
+
+The application now includes a comprehensive hybrid search system that combines keyword-based BM25 search with semantic vector search:
+
+### Search Methods Available
+1. **Vector Search** (`search_documents()`): Semantic similarity search using TF-IDF+SVD embeddings
+2. **BM25 Search** (`bm25_search_documents()`): Keyword-based search using BM25 relevance scoring
+3. **Hybrid Search** (`hybrid_search_documents()`): Combines BM25 and vector search with configurable score fusion
+
+### Hybrid Search Features
+- **Score Fusion**: Normalizes BM25 and vector scores to [0,1] range before combining
+- **Configurable Weights**: Default 30% BM25, 70% vector search (configurable via `bm25_weight` and `vector_weight`)
+- **Document Deduplication**: Handles cases where same document appears in both search results
+- **Ranked Results**: Returns documents ranked by combined hybrid relevance scores
+
+### Usage Example
+```python
+from app.services.document_indexer import DocumentIndexer
+
+indexer = DocumentIndexer()
+indexer.index_documents(Path("docs/"))
+
+# Different search methods
+vector_results = indexer.search_documents("machine learning", k=5)
+bm25_results = indexer.bm25_search_documents("machine learning", k=5)  
+hybrid_results = indexer.hybrid_search_documents("machine learning", k=5)
+```
+
 ## Core Workflow
-- Be sure to typecheck when you’re done making a series of code changes
+- Be sure to typecheck when you're done making a series of code changes
 - Prefer running single tests, and not the whole test suite, for performance
 
 ## Implementation Priority
@@ -173,8 +215,8 @@ training-python-app-rag++/
 ✅ Phase 2: Text chunking functionality with overlap
 ✅ Phase 3: Embedding Pipeline - TF-IDF+SVD embeddings with FAISS vector storage
 ✅ Phase 3: Document indexing and basic vector similarity search
-☐ Phase 4: Hybrid Search - Add BM25 keyword search capability
-☐ Phase 4: Combine BM25 + vector search with simple score fusion
+✅ Phase 4: Hybrid Search - Add BM25 keyword search capability
+✅ Phase 4: Combine BM25 + vector search with simple score fusion
 ☐ Phase 5: Core API - Implement POST /ask endpoint with basic retrieval
 ☐ Phase 5: Add LLM answer generation with cited spans (Claude API)
 ☐ Phase 6: Feedback System - Implement POST /feedback endpoint with in-memory storage

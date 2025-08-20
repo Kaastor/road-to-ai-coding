@@ -273,9 +273,9 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application from Phase 3:
-- Embedding Pipeline - HuggingFace embeddings with simple vector storage
-- Document indexing and basic vector similarity search
+claude "Develop following part of the application from Phase 4:
+- Hybrid Search - Add BM25 keyword search capability
+- Combine BM25 + vector search with simple score fusion
 Create minimal tests and at the end of your work quickly summarize what you did and why and
 what was not accomplished if that is the case."
 ```

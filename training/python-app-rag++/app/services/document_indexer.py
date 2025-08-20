@@ -8,6 +8,7 @@ from .document_loader import DocumentLoader
 from .text_chunker import TextChunker
 from .adaptive_embedding_service import AdaptiveEmbeddingService
 from .vector_storage import VectorStorage
+from .hybrid_search import HybridSearch
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,8 @@ class DocumentIndexer:
         
         # Vector storage will be initialized after we know actual embedding dimension
         self.vector_storage = None
+        # Hybrid search will be initialized after vector storage is ready
+        self.hybrid_search = None
         
         logger.info(f"Document indexer initialized with embedding model: {embedding_model}")
     
@@ -104,11 +107,20 @@ class DocumentIndexer:
         logger.info("Storing vectors...")
         doc_ids = self.vector_storage.add_documents(embeddings, chunk_metadata)
         
+        # Initialize hybrid search with the indexed data
+        logger.info("Initializing hybrid search...")
+        self.hybrid_search = HybridSearch(
+            vector_storage=self.vector_storage,
+            embedding_service=self.embedding_service
+        )
+        self.hybrid_search.index_documents(chunk_metadata)
+        
         stats = {
             "total_documents": len(documents),
             "total_chunks": len(all_chunks),
             "embedding_dimension": embeddings.shape[1] if len(embeddings) > 0 else 0,
-            "indexed_document_ids": doc_ids
+            "indexed_document_ids": doc_ids,
+            "hybrid_search_ready": self.hybrid_search._is_ready()
         }
         
         logger.info(f"Indexing complete: {stats}")
@@ -150,6 +162,57 @@ class DocumentIndexer:
             results.append(result)
         
         logger.debug(f"Found {len(results)} results")
+        return results
+    
+    def hybrid_search_documents(self, query: str, k: int = 5) -> List[Dict[str, Any]]:
+        """Search for documents using hybrid BM25 + vector search.
+        
+        Args:
+            query: Search query text.
+            k: Number of results to return.
+            
+        Returns:
+            List of search results with hybrid scores and metadata.
+        """
+        logger.debug(f"Hybrid searching for: '{query}' (k={k})")
+        
+        if self.hybrid_search is None:
+            logger.warning("No hybrid search available - run index_documents first")
+            return []
+        
+        return self.hybrid_search.search(query, k=k)
+    
+    def bm25_search_documents(self, query: str, k: int = 5) -> List[Dict[str, Any]]:
+        """Search for documents using BM25 keyword search only.
+        
+        Args:
+            query: Search query text.
+            k: Number of results to return.
+            
+        Returns:
+            List of search results with BM25 scores and metadata.
+        """
+        logger.debug(f"BM25 searching for: '{query}' (k={k})")
+        
+        if self.hybrid_search is None:
+            logger.warning("No hybrid search available - run index_documents first")
+            return []
+        
+        scores, documents = self.hybrid_search.bm25_search.search(query, k=k)
+        
+        # Convert to standard result format
+        results = []
+        for score, doc in zip(scores, documents):
+            result = {
+                "bm25_score": float(score),
+                "source_file": doc.get("source_file", ""),
+                "title": doc.get("title", ""),
+                "chunk_index": doc.get("chunk_index", 0),
+                "chunk_text": doc.get("chunk_text", ""),
+                "char_count": doc.get("char_count", 0)
+            }
+            results.append(result)
+        
         return results
     
     def get_stats(self) -> Dict[str, Any]:
@@ -199,5 +262,13 @@ class DocumentIndexer:
             if chunk_texts:
                 logger.info("Preparing embedding service for loaded corpus...")
                 self.embedding_service.prepare_for_corpus(chunk_texts)
+        
+        # Initialize hybrid search with loaded data
+        logger.info("Initializing hybrid search for loaded index...")
+        self.hybrid_search = HybridSearch(
+            vector_storage=self.vector_storage,
+            embedding_service=self.embedding_service
+        )
+        self.hybrid_search.index_documents(metadata['documents'])
         
         logger.info(f"Index loaded from: {filepath}")
