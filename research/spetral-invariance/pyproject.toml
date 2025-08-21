@@ -1,26 +1,27 @@
 # poetry install
 
 [tool.poetry]
-name = "training-app"
+name = "spectral-invariance"
 version = "0.1.0"
-description = "Training apps"
-authors = ["Your Name <you@example.com>"]
+description = "Quantum Neural Networks Spectral Invariance Research - PennyLane Implementation"
+authors = ["Research Team <research@example.com>"]
 
 packages = [
-  { include = "app" }
+  { include = "spectral_qnn" }
 ]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.104.0"
-uvicorn = "^0.24.0"
-python-dotenv = "^1.0.0"
+# Use existing versions
+pennylane = "^0.35.0"
+numpy = "^2.0.0"
+scipy = "^1.13.0"
+matplotlib = "^3.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
-
-[tool.poetry.scripts]
-elevator = "app.app:main"
+jupyter = "^1.0.0"
+black = "^23.0.0"
 
 [build-system]
 requires = ["poetry-core"]

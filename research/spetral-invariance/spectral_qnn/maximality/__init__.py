@@ -1,0 +1,1 @@
+"""Maximality analysis for QNN frequency spectra."""
