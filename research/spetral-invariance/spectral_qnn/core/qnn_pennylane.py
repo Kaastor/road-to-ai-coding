@@ -31,7 +31,7 @@ class QuantumNeuralNetwork:
         self.n_qubits = n_qubits
         self.n_layers = n_layers
         self.ansatz_type = ansatz_type
-        self.device = qml.device('lightning.qubit', wires=n_qubits)
+        self.device = qml.device('default.qubit', wires=n_qubits)
         
         # Initialize parameters randomly
         self.n_params = self._count_parameters()

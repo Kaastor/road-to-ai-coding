@@ -14,7 +14,7 @@ This project implements the theoretical findings from the research paper "Spectr
 - Arbitrary dimensional generators with Golomb ruler optimization
 - Comprehensive visualization and validation suite
 
-**Status: Complete and validated against research paper (36/36 tests passing)**
+**Status: Complete and validated against research paper (39/39 tests passing)**
 
 ## Build & Test Commands
 
@@ -24,8 +24,8 @@ This project implements the theoretical findings from the research paper "Spectr
 
 ### Testing
 ```bash
-# Run all tests (excluding PennyLane compatibility issues)
-poetry run python -m pytest tests/ --ignore=tests/test_qnn_basic.py -v
+# Run all tests (all 39 tests now working!)
+poetry run python -m pytest tests/ -v
 
 # Run paper compliance validation
 poetry run python -m pytest tests/test_paper_compliance.py -v
@@ -59,14 +59,14 @@ spectral_qnn/                    # Main package
 │   ├── frequency_analyzer.py    # Frequency spectrum analysis & Minkowski sums
 │   ├── generators.py           # Hamiltonian generators & encoding strategies
 │   ├── simple_qnn.py          # Simplified QNN implementation
-│   └── qnn_pennylane.py       # Full PennyLane QNN (has compatibility issues)
+│   └── qnn_pennylane.py       # Full PennyLane QNN implementation (working!)
 ├── maximality/                 # Maximality analysis modules
 │   ├── two_dim_analysis.py     # 2D sub-generator maximality (Theorems 12-13)
 │   └── golomb_generators.py    # Arbitrary dimensional generators with Golomb rulers
 └── validation/                 # Validation and visualization
     └── visualization.py        # Comprehensive validation suite with plots
 
-tests/                          # Test suite (36 tests, 100% passing)
+tests/                          # Test suite (39 tests, 100% passing)
 ├── test_frequency_analyzer.py  # Core frequency analysis tests
 ├── test_generators.py         # Hamiltonian generator tests  
 ├── test_simple_qnn.py         # QNN implementation tests
@@ -158,7 +158,7 @@ validation_against_paper.py   # Comprehensive paper validation
 ### Validation Status:
 
 ✅ **Paper Compliance**: 6/6 core requirements validated
-✅ **Test Coverage**: 36/36 tests passing (100% success rate)
+✅ **Test Coverage**: 39/39 tests passing (100% success rate)
 ✅ **Mathematical Accuracy**: All formulas match paper specifications
 ✅ **Area Invariance**: 100% success rate on validation tests
 ✅ **Maximality Conditions**: Theoretical formulas correctly implemented
