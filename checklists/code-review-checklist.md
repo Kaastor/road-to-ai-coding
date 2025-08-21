@@ -1,6 +1,0 @@
-- Correctness: inputs, edge cases, error handling
-- Security: injection, authz, secrets, dependency versions
-- Reliability: timeouts, retries, idempotency, logging
-- Performance: complexity, hot paths, allocations
-- Readability: names, cohesion, comments, dead code
-- Tests: critical cases, negative tests, property tests
