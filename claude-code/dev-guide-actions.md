@@ -251,8 +251,6 @@ Create minimal tests and at the end of your work summarize what you did and why 
 claude "Refactor this code for better [performance/readability]: [code]"
 ```
 
-
-
 ### Workbook
 
 
@@ -260,8 +258,17 @@ claude "Refactor this code for better [performance/readability]: [code]"
 claude "Check if you have the ability to run and test this application. Use @CLAUDE.md for project information."
 ```
 
+(optional if plan, deps already exist)
 ```bash
-claude "Create a implementation plan for this 'Project Overview' locatecd in @CLAUDE.md.
+claude "Based on information in @CLAUDE.md setup this project.
+- Use already present environment setup, just extend it
+- Install dependencies
+- Prepare folder structure
+At the end check if you have the ability to run and test this application.
+```
+
+```bash
+claude "Create a implementation plan for this 'Project Overview' located in @CLAUDE.md.
 - I want to have modular plan that will allow to work in small iterative steps.
 - This is Proof of Concept application not production ready app.
 - Include necessary dependencies needed to develop the project, if you do not have to implement something, use a library
