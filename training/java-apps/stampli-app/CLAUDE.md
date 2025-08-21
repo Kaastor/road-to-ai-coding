@@ -15,8 +15,8 @@ Java 17 hello world application with Maven build system. Template project for Ja
 
 ### Testing (JUnit 5)
 - All tests: `mvn -q test`
-- Single test class: `mvn -q -Dtest=ElevatorServiceTest test`
-- Single test method: `mvn -q -Dtest=ElevatorServiceTest#movesUp test`
+- Single test class: `mvn -q -Dtest=HelloTest test`
+- Single test method: `mvn -q -Dtest=HelloTest#defaultGreeting test`
 - Fail fast on first failure: `mvn -q -Dsurefire.failIfNoSpecifiedTests=false -DfailIfNoTests=false test`
 
 > Tip: Prefer the Maven Wrapper if present: `./mvnw …`
