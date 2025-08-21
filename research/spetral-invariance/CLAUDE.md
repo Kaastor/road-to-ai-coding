@@ -49,6 +49,9 @@ poetry run python demo_validation.py
 
 # Run paper compliance validation
 poetry run python validation_against_paper.py
+
+# Run QNN example with R=1, L=2, sequential exponential encoding
+poetry run python example_r1_l2_sequential.py
 ```
 
 ## Project Structure
@@ -79,6 +82,7 @@ papers/                         # Research paper
 └── Spectral invariance and maximality properties...pdf
 
 demo_*.py                      # Demonstration scripts
+example_r1_l2_sequential.py   # QNN usage example (R=1, L=2, sequential exponential)
 validation_against_paper.py   # Comprehensive paper validation
 ```
 
@@ -123,24 +127,31 @@ validation_against_paper.py   # Comprehensive paper validation
      - Equal layers maximal encoding
    - Generator spectrum analysis
 
-3. **QNN Implementation** (`spectral_qnn/core/simple_qnn.py`)
-   - Simplified QNN focusing on frequency spectrum properties
+3. **QNN Implementation** (`spectral_qnn/core/qnn_pennylane.py`)
+   - Full PennyLane QNN implementation with proper generator integration
+   - Support for all encoding strategies (Hamming, Sequential Exponential, Ternary, Equal Maximal)
+   - Proper matrix exponentiation exp(-ix H_l) for data encoding layers
+   - Both parallel and sequential ansatz support
    - Area-preserving transformation validation
    - Spectral invariance demonstration
 
-4. **Maximality Analysis** (`spectral_qnn/maximality/`)
+4. **Simplified QNN** (`spectral_qnn/core/simple_qnn.py`)
+   - Mathematical QNN focusing on frequency spectrum properties
+   - Theoretical analysis and validation
+
+5. **Maximality Analysis** (`spectral_qnn/maximality/`)
    - 2D sub-generator maximality conditions (Theorems 12-13)
    - Equal data encoding layers analysis
    - Arbitrary encoding optimization
    - Comprehensive configuration testing
 
-5. **Golomb Generators** (`spectral_qnn/maximality/golomb_generators.py`)
+6. **Golomb Generators** (`spectral_qnn/maximality/golomb_generators.py`)
    - Golomb ruler construction for optimal frequency separation
    - Arbitrary dimensional Hermitian generators
    - Performance comparison with standard approaches
    - Optimal configuration search
 
-6. **Validation Suite** (`spectral_qnn/validation/visualization.py`)
+7. **Validation Suite** (`spectral_qnn/validation/visualization.py`)
    - Comprehensive validation against research paper
    - Visualization plots for all major results
    - Area invariance demonstration
@@ -162,6 +173,7 @@ validation_against_paper.py   # Comprehensive paper validation
 ✅ **Mathematical Accuracy**: All formulas match paper specifications
 ✅ **Area Invariance**: 100% success rate on validation tests
 ✅ **Maximality Conditions**: Theoretical formulas correctly implemented
+✅ **Generator Integration**: Proper usage of generators in QNN circuits implemented
 
 ## Code Style Guidelines
 
