@@ -1,9 +1,7 @@
 {
   "folders": [
     { "path": "." },
-    { "name": "cs",   "path": "./training/c-sharp" },
     { "name": "py",   "path": "./training/python-apps" },
-    { "name": "java", "path": "./training/java-apps" }
   ],
 
   "settings": {
