@@ -1,7 +1,9 @@
 from typing import Optional
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Form
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from io import BytesIO
 
 from app.domain.models.schemas import (
     CreateModelRequest,
@@ -9,9 +11,12 @@ from app.domain.models.schemas import (
     UpdateModelStatusRequest,
     UpdateModelRequest,
     UpdateModelVersionMetadataRequest,
+    FileUploadResponse,
+    PromoteModelRequest,
     ModelResponse,
     ModelVersionResponse
 )
+from app.infrastructure.storage.file_storage import ModelFormat
 from app.domain.models.mappers import model_to_response, model_version_to_response
 from app.domain.exceptions.exceptions import (
     ModelNotFoundError,
@@ -25,6 +30,8 @@ from app.infrastructure.repositories.sqlalchemy_repositories import (
     SQLAlchemyModelVersionRepository
 )
 from app.infrastructure.storage.database import get_db
+from app.infrastructure.storage.storage_factory import StorageFactory
+from app.config import get_settings
 
 router = APIRouter(prefix="/models", tags=["models"])
 
@@ -33,7 +40,9 @@ def get_model_service(db: Session = Depends(get_db)) -> ModelService:
     """Dependency to get model service."""
     model_repo = SQLAlchemyModelRepository(db)
     version_repo = SQLAlchemyModelVersionRepository(db)
-    return ModelService(model_repo, version_repo)
+    settings = get_settings()
+    file_storage = StorageFactory.create_file_storage(settings)
+    return ModelService(model_repo, version_repo, file_storage)
 
 
 @router.post("/", response_model=ModelResponse, status_code=201)
@@ -221,5 +230,102 @@ async def update_version_metadata(
         return model_version_to_response(updated_version)
     except ModelVersionNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{model_id}/versions/{version}/artifact", response_model=FileUploadResponse)
+async def upload_artifact(
+    model_id: UUID,
+    version: str,
+    file: UploadFile = File(...),
+    format: ModelFormat = Form(...),
+    service: ModelService = Depends(get_model_service)
+):
+    """Upload an artifact file for a model version."""
+    try:
+        # Validate file size
+        settings = get_settings()
+        content = await file.read()
+        if len(content) > settings.max_artifact_size_mb * 1024 * 1024:
+            raise HTTPException(
+                status_code=413, 
+                detail=f"File too large. Maximum size is {settings.max_artifact_size_mb}MB"
+            )
+        
+        # Create file-like object
+        file_obj = BytesIO(content)
+        
+        result = await service.upload_artifact(model_id, version, file_obj, format)
+        return result
+        
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{model_id}/versions/{version}/artifact")
+async def download_artifact(
+    model_id: UUID,
+    version: str,
+    service: ModelService = Depends(get_model_service)
+):
+    """Download an artifact file for a model version."""
+    try:
+        file_obj = await service.download_artifact(model_id, version)
+        
+        return StreamingResponse(
+            file_obj,
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f"attachment; filename=model-{version}.artifact"}
+        )
+        
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/{model_id}/versions/{version}/artifact", status_code=204)
+async def delete_artifact(
+    model_id: UUID,
+    version: str,
+    service: ModelService = Depends(get_model_service)
+):
+    """Delete an artifact file for a model version."""
+    try:
+        deleted = await service.delete_artifact(model_id, version)
+        if not deleted:
+            raise HTTPException(status_code=404, detail="No artifact found for this model version")
+            
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{model_id}/versions/{version}/promote", response_model=ModelVersionResponse)
+async def promote_model_version(
+    model_id: UUID,
+    version: str,
+    request: PromoteModelRequest,
+    service: ModelService = Depends(get_model_service)
+):
+    """Promote a model version to a higher status."""
+    try:
+        updated_version = await service.promote_model_version(model_id, version, request)
+        return model_version_to_response(updated_version)
+        
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

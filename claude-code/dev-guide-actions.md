@@ -102,19 +102,19 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application: API Layer (Iteration 3-4)
+claude "Develop following part of the application: Phase 3: File Storage & Model Artifacts (Iteration 5-6)
 
-  Iteration 3: REST API Foundation
-  - Set up FastAPI with basic endpoints
-  - Implement model registration endpoint
-  - Add health check and basic error handling
-  - Create API documentation with OpenAPI
+  Iteration 5: File Storage
+  - Implement local file storage for model artifacts
+  - Add file upload/download endpoints
+  - Create storage abstraction layer
+  - Handle different model formats (pickle, joblib, ONNX)
 
-  Iteration 4: Model Management APIs
-  - Add model listing and search endpoints
-  - Implement model versioning endpoints
-  - Add metadata update capabilities
-  - Include basic input validation
+  Iteration 6: Model Lifecycle
+  - Add model status management (draft, staging, production)
+  - Implement model promotion workflow
+  - Add model deregistration functionality
+  - Create audit logging
 Create minimal tests and at the end of your work quickly summarize what you did and why and what was not accomplished if that is the case."
 ```
 
@@ -123,5 +123,5 @@ claude "Check if your changes are aligned with overall Project goals and are mov
 ```
 
 ```bash
-claude "Create 'demo' scripts to test the application"
+claude "Create 'demo' scripts to test the application to test main use cases."
 ```

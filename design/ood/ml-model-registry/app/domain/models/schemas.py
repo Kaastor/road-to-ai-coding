@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
 
 from app.domain.models.model import ModelStatus
+from app.infrastructure.storage.file_storage import ModelFormat
 
 
 class ModelMetadataSchema(BaseModel):
@@ -105,3 +106,22 @@ class UpdateModelRequest(BaseModel):
 class UpdateModelVersionMetadataRequest(BaseModel):
     """Request schema for updating model version metadata."""
     metadata: ModelMetadataSchema = Field(..., description="Updated metadata")
+
+
+class FileUploadRequest(BaseModel):
+    """Request schema for file upload metadata."""
+    format: ModelFormat = Field(..., description="Model file format")
+
+
+class FileUploadResponse(BaseModel):
+    """Response schema for file upload."""
+    artifact_path: str = Field(..., description="Path of uploaded artifact")
+    size: int = Field(..., description="File size in bytes")
+    format: ModelFormat = Field(..., description="Model file format")
+    uploaded_at: datetime = Field(..., description="Upload timestamp")
+
+
+class PromoteModelRequest(BaseModel):
+    """Request schema for promoting a model to a higher status."""
+    to_status: ModelStatus = Field(..., description="Target status for promotion")
+    reason: Optional[str] = Field(None, description="Reason for promotion")

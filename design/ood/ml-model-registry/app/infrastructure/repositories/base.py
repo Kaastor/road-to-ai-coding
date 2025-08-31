@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Optional, Protocol
 from uuid import UUID
 
-from app.domain.models.model import Model, ModelVersion
+from app.domain.models.model import Model, ModelVersion, ModelStatus
 
 T = TypeVar('T')
 
@@ -71,4 +71,9 @@ class ModelVersionRepository(Repository[ModelVersion]):
     @abstractmethod
     async def get_latest_by_model(self, model_id: UUID) -> Optional[ModelVersion]:
         """Get the latest version for a specific model."""
+        pass
+    
+    @abstractmethod
+    async def get_by_model_and_status(self, model_id: UUID, status: ModelStatus) -> Optional[ModelVersion]:
+        """Get version by model ID and status."""
         pass

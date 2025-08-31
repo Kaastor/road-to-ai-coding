@@ -257,6 +257,17 @@ class SQLAlchemyModelVersionRepository(ModelVersionRepository):
         
         return self._to_domain_version(db_version)
     
+    async def get_by_model_and_status(self, model_id: UUID, status: ModelStatus) -> Optional[ModelVersion]:
+        """Get version by model ID and status."""
+        db_version = self.session.query(ModelVersionTable).filter(
+            and_(ModelVersionTable.model_id == model_id, ModelVersionTable.status == status)
+        ).first()
+        
+        if not db_version:
+            return None
+        
+        return self._to_domain_version(db_version)
+    
     def _to_domain_version(self, db_version: ModelVersionTable) -> ModelVersion:
         """Convert SQLAlchemy version to domain version."""
         metadata = ModelMetadata(

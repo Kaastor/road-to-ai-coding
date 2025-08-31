@@ -9,12 +9,15 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 ### Core Features:
 - Model registration and versioning
 - Metadata management and search
-- Model artifact storage (local filesystem)
+- Model artifact storage (local filesystem) with multi-format support
 - Model lifecycle management (draft/staging/production/archived)
+- Model promotion workflow with validation
 - Performance metrics tracking
 - REST API with OpenAPI documentation
 - Advanced search capabilities (by name, description, and tags)
 - Metadata update operations for models and versions
+- File upload/download operations for model artifacts
+- Audit logging for all model operations
 - Comprehensive input validation and error handling
 - Clean Architecture implementation with proper separation of concerns
 
@@ -29,6 +32,15 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 
 # single test
 `poetry run python -m pytest app/tests/test_domain_models.py::TestModel::test_create_model -v`
+
+# run file storage tests
+`poetry run python -m pytest app/tests/test_file_storage.py -v`
+
+# run model lifecycle tests
+`poetry run python -m pytest app/tests/test_model_lifecycle.py -v`
+
+# run artifact operations tests
+`poetry run python -m pytest app/tests/test_artifact_operations.py -v`
 
 ### Running the Application
 # start the development server
@@ -61,7 +73,8 @@ ml-model-registry/
 │   │   │   ├── __init__.py
 │   │   │   ├── model.py            # Core domain models (Model, ModelVersion, ModelMetadata)
 │   │   │   ├── schemas.py          # Pydantic schemas for validation/serialization
-│   │   │   └── mappers.py          # Domain to schema mapping functions
+│   │   │   ├── mappers.py          # Domain to schema mapping functions
+│   │   │   └── audit.py            # Audit logging models and functionality
 │   │   └── exceptions/
 │   │       ├── __init__.py
 │   │       └── exceptions.py       # Custom domain exceptions
@@ -74,14 +87,19 @@ ml-model-registry/
 │   │   └── storage/
 │   │       ├── __init__.py
 │   │       ├── database.py         # Database configuration and session management
-│   │       └── models.py           # SQLAlchemy ORM models
+│   │       ├── models.py           # SQLAlchemy ORM models
+│   │       ├── file_storage.py     # File storage abstraction and implementations
+│   │       └── storage_factory.py  # Factory for creating storage instances
 │   ├── services/                   # Application services layer
 │   │   ├── __init__.py
-│   │   └── model_service.py        # Model management business logic with search and update operations
+│   │   └── model_service.py        # Model management business logic with search, update, file operations
 │   └── tests/                      # Test suite
 │       ├── __init__.py
 │       ├── test_domain_models.py   # Domain model unit tests
 │       ├── test_api.py             # Comprehensive API integration tests
+│       ├── test_file_storage.py    # File storage functionality tests
+│       ├── test_model_lifecycle.py # Model promotion and lifecycle tests
+│       ├── test_artifact_operations.py # Artifact upload/download/delete tests
 │       └── test_app.py             # Legacy test file
 ├── .env.example                    # Environment variables example
 ├── CLAUDE.md                       # This file - Project documentation and guidelines
@@ -238,6 +256,14 @@ The application provides a RESTful API for model registry operations:
 - `PATCH /api/v1/models/{model_id}/versions/{version}/metadata` - Update version metadata
 - `GET /api/v1/models/{model_id}/versions/latest` - Get the latest version
 
+### Model Artifacts
+- `POST /api/v1/models/{model_id}/versions/{version}/artifact` - Upload artifact file for a model version
+- `GET /api/v1/models/{model_id}/versions/{version}/artifact` - Download artifact file for a model version
+- `DELETE /api/v1/models/{model_id}/versions/{version}/artifact` - Delete artifact file for a model version
+
+### Model Lifecycle
+- `POST /api/v1/models/{model_id}/versions/{version}/promote` - Promote model version to higher status
+
 ### Search and Filtering
 The models listing endpoint (`GET /api/v1/models/`) supports the following query parameters:
 - `skip` - Number of records to skip for pagination (default: 0)
@@ -250,6 +276,20 @@ The models listing endpoint (`GET /api/v1/models/`) supports the following query
 - **staging** - Version ready for testing
 - **production** - Version deployed to production
 - **archived** - Deprecated version
+
+### Supported Model Formats
+- **pickle** - Python pickle format
+- **joblib** - Joblib serialization format
+- **onnx** - ONNX (Open Neural Network Exchange) format
+- **h5** - HDF5 format (commonly used with Keras/TensorFlow)
+- **pt** - PyTorch model format
+- **pb** - TensorFlow protobuf format
+
+### Model Promotion Rules
+- **draft → staging**: Standard promotion path for models ready for testing
+- **staging → production**: Models that have passed testing and validation
+- **production → archived**: Retire models from active production use
+- Only one version per model can be in **production** status at a time
 
 ## Environment Configuration
 
@@ -264,6 +304,9 @@ Key configuration options:
 - `API_HOST` - Server host (default: `127.0.0.1`)
 - `API_PORT` - Server port (default: `8000`)
 - `DEBUG` - Enable debug mode (default: `false`)
+- `ARTIFACT_STORAGE_PATH` - Directory for storing model artifacts (default: `./artifacts`)
+- `MAX_ARTIFACT_SIZE_MB` - Maximum artifact file size in MB (default: `100`)
+- `LOG_LEVEL` - Logging level (default: `INFO`)
 
 ## Architecture Notes
 
@@ -278,3 +321,7 @@ Key patterns implemented:
 - **Repository Pattern**: Abstract data access behind interfaces
 - **Dependency Injection**: Services depend on abstractions, not concrete implementations
 - **Domain-Driven Design**: Rich domain models with business logic encapsulation
+- **Factory Pattern**: Storage factory for creating file storage instances
+- **Strategy Pattern**: File storage abstraction allows different storage implementations
+- **Audit Logging Pattern**: Comprehensive logging of all domain operations
+- **State Machine Pattern**: Model lifecycle with controlled status transitions
