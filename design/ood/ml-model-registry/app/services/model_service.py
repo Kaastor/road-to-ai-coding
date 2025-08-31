@@ -2,7 +2,7 @@ from typing import Optional, BinaryIO
 from uuid import UUID
 from datetime import datetime
 
-from app.domain.models.model import Model, ModelVersion, ModelStatus
+from app.domain.models.model import Model, ModelVersion, ModelStatus, ModelEvaluation
 from app.domain.models.schemas import (
     CreateModelRequest, 
     CreateModelVersionRequest, 
@@ -10,7 +10,10 @@ from app.domain.models.schemas import (
     UpdateModelRequest,
     UpdateModelVersionMetadataRequest,
     FileUploadResponse,
-    PromoteModelRequest
+    PromoteModelRequest,
+    CreateEvaluationRequest,
+    ModelComparisonResponse,
+    MetricsVisualizationResponse
 )
 from app.domain.models.model import ModelMetadata
 from app.domain.models.audit import AuditLogger, AuditAction
@@ -384,3 +387,138 @@ class ModelService:
         )
         
         return updated_version
+    
+    async def create_evaluation(
+        self,
+        model_id: UUID,
+        version: str,
+        request: CreateEvaluationRequest
+    ) -> ModelEvaluation:
+        """Create an evaluation for a model version."""
+        model_version = await self.version_repo.get_by_model_and_version(model_id, version)
+        if not model_version:
+            raise ModelVersionNotFoundError(model_id, version)
+        
+        evaluation = ModelEvaluation.create(
+            model_version_id=model_version.id,
+            evaluation_name=request.evaluation_name,
+            dataset_name=request.dataset_name,
+            metrics=request.metrics,
+            metadata=request.metadata
+        )
+        
+        model_version.add_evaluation(evaluation)
+        await self.version_repo.update(model_version)
+        
+        # Log the operation
+        await self.audit_logger.log_version_operation(
+            action=AuditAction.CREATE_EVALUATION,
+            version_id=model_version.id,
+            details={
+                "model_id": str(model_id),
+                "version": version,
+                "evaluation_name": request.evaluation_name,
+                "dataset_name": request.dataset_name,
+                "metrics": request.metrics
+            }
+        )
+        
+        return evaluation
+    
+    async def get_model_evaluations(self, model_id: UUID, version: str) -> list[ModelEvaluation]:
+        """Get all evaluations for a model version."""
+        model_version = await self.version_repo.get_by_model_and_version(model_id, version)
+        if not model_version:
+            raise ModelVersionNotFoundError(model_id, version)
+        
+        return model_version.evaluations
+    
+    async def compare_model_versions_by_metric(
+        self, 
+        model_id: UUID, 
+        metric_name: str
+    ) -> ModelComparisonResponse:
+        """Compare all versions of a model by a specific metric."""
+        model = await self.model_repo.get_by_id(model_id)
+        if not model:
+            raise ModelNotFoundError(model_id)
+        
+        versions_data = []
+        for version in model.versions:
+            latest_eval = version.get_latest_evaluation()
+            metric_value = None
+            
+            # Try to get from latest evaluation first, then from metadata
+            if latest_eval and metric_name in latest_eval.metrics:
+                metric_value = latest_eval.metrics[metric_name]
+            elif metric_name in version.metadata.performance_metrics:
+                metric_value = version.metadata.performance_metrics[metric_name]
+            
+            versions_data.append({
+                "version": version.version,
+                "status": version.status.value,
+                "metric_value": metric_value,
+                "created_at": version.created_at,
+                "updated_at": version.updated_at
+            })
+        
+        # Sort by metric value descending (best first)
+        versions_data.sort(
+            key=lambda x: x["metric_value"] if x["metric_value"] is not None else float('-inf'),
+            reverse=True
+        )
+        
+        return ModelComparisonResponse(
+            metric_name=metric_name,
+            versions=versions_data
+        )
+    
+    async def get_metrics_visualization_data(self, model_id: UUID) -> MetricsVisualizationResponse:
+        """Get structured metrics data for visualization."""
+        model = await self.model_repo.get_by_id(model_id)
+        if not model:
+            raise ModelNotFoundError(model_id)
+        
+        # Collect all metrics across versions and evaluations
+        all_metrics = set()
+        version_metrics = {}
+        
+        for version in model.versions:
+            version_data: Dict[str, Any] = {
+                "version": version.version,
+                "status": version.status.value,
+                "created_at": version.created_at,
+                "metrics": {},
+                "evaluations": []
+            }
+            
+            # Add metrics from metadata
+            for metric, value in version.metadata.performance_metrics.items():
+                all_metrics.add(metric)
+                version_data["metrics"][metric] = value
+            
+            # Add evaluation metrics
+            for evaluation in version.evaluations:
+                eval_data = {
+                    "name": evaluation.evaluation_name,
+                    "dataset": evaluation.dataset_name,
+                    "created_at": evaluation.created_at,
+                    "metrics": evaluation.metrics
+                }
+                version_data["evaluations"].append(eval_data)
+                all_metrics.update(evaluation.metrics.keys())
+            
+            version_metrics[version.version] = version_data
+        
+        metrics_data = {
+            "available_metrics": list(all_metrics),
+            "versions": version_metrics,
+            "total_versions": len(model.versions),
+            "total_evaluations": sum(len(v.evaluations) for v in model.versions)
+        }
+        
+        return MetricsVisualizationResponse(
+            model_id=model_id,
+            model_name=model.name,
+            metrics_data=metrics_data
+        )

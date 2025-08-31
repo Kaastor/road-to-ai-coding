@@ -14,7 +14,11 @@ from app.domain.models.schemas import (
     FileUploadResponse,
     PromoteModelRequest,
     ModelResponse,
-    ModelVersionResponse
+    ModelVersionResponse,
+    CreateEvaluationRequest,
+    ModelEvaluationSchema,
+    ModelComparisonResponse,
+    MetricsVisualizationResponse
 )
 from app.infrastructure.storage.file_storage import ModelFormat
 from app.domain.models.mappers import model_to_response, model_version_to_response
@@ -327,5 +331,71 @@ async def promote_model_version(
         raise HTTPException(status_code=404, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{model_id}/versions/{version}/evaluations", response_model=ModelEvaluationSchema, status_code=201)
+async def create_evaluation(
+    model_id: UUID,
+    version: str,
+    request: CreateEvaluationRequest,
+    service: ModelService = Depends(get_model_service)
+):
+    """Create an evaluation for a model version."""
+    try:
+        evaluation = await service.create_evaluation(model_id, version, request)
+        return ModelEvaluationSchema.from_orm(evaluation)
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{model_id}/versions/{version}/evaluations", response_model=list[ModelEvaluationSchema])
+async def get_model_evaluations(
+    model_id: UUID,
+    version: str,
+    service: ModelService = Depends(get_model_service)
+):
+    """Get all evaluations for a model version."""
+    try:
+        evaluations = await service.get_model_evaluations(model_id, version)
+        return [ModelEvaluationSchema.from_orm(eval) for eval in evaluations]
+    except ModelVersionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{model_id}/compare/{metric_name}", response_model=ModelComparisonResponse)
+async def compare_model_versions(
+    model_id: UUID,
+    metric_name: str,
+    service: ModelService = Depends(get_model_service)
+):
+    """Compare all versions of a model by a specific metric."""
+    try:
+        comparison = await service.compare_model_versions_by_metric(model_id, metric_name)
+        return comparison
+    except ModelNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{model_id}/metrics/visualization", response_model=MetricsVisualizationResponse)
+async def get_metrics_visualization(
+    model_id: UUID,
+    service: ModelService = Depends(get_model_service)
+):
+    """Get structured metrics data for visualization."""
+    try:
+        visualization_data = await service.get_metrics_visualization_data(model_id)
+        return visualization_data
+    except ModelNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 
@@ -11,6 +11,38 @@ class ModelStatus(str, Enum):
     STAGING = "staging"
     PRODUCTION = "production"
     ARCHIVED = "archived"
+
+
+@dataclass
+class ModelEvaluation:
+    """Comprehensive evaluation results for a model version."""
+    id: UUID
+    model_version_id: UUID
+    evaluation_name: str
+    dataset_name: str
+    metrics: Dict[str, float]
+    created_at: datetime
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    @classmethod
+    def create(
+        cls,
+        model_version_id: UUID,
+        evaluation_name: str,
+        dataset_name: str,
+        metrics: Dict[str, float],
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> "ModelEvaluation":
+        """Create a new model evaluation."""
+        return cls(
+            id=uuid4(),
+            model_version_id=model_version_id,
+            evaluation_name=evaluation_name,
+            dataset_name=dataset_name,
+            metrics=metrics,
+            metadata=metadata or {},
+            created_at=datetime.utcnow()
+        )
 
 
 @dataclass
@@ -41,6 +73,7 @@ class ModelVersion:
     metadata: ModelMetadata
     created_at: datetime
     updated_at: datetime
+    evaluations: list[ModelEvaluation] = field(default_factory=list)
     
     @classmethod
     def create(
@@ -72,6 +105,23 @@ class ModelVersion:
     def update_timestamp(self) -> None:
         """Update the updated_at timestamp."""
         self.updated_at = datetime.utcnow()
+    
+    def add_evaluation(self, evaluation: ModelEvaluation) -> None:
+        """Add an evaluation to this model version."""
+        if evaluation.model_version_id != self.id:
+            raise ValueError("Evaluation model_version_id must match this version's id")
+        self.evaluations.append(evaluation)
+        self.update_timestamp()
+    
+    def get_evaluation(self, evaluation_name: str) -> Optional[ModelEvaluation]:
+        """Get an evaluation by name."""
+        return next((e for e in self.evaluations if e.evaluation_name == evaluation_name), None)
+    
+    def get_latest_evaluation(self) -> Optional[ModelEvaluation]:
+        """Get the most recent evaluation."""
+        if not self.evaluations:
+            return None
+        return max(self.evaluations, key=lambda e: e.created_at)
 
 
 @dataclass
@@ -130,3 +180,21 @@ class Model:
     def update_timestamp(self) -> None:
         """Update the updated_at timestamp."""
         self.updated_at = datetime.utcnow()
+    
+    def get_all_evaluations(self) -> list[ModelEvaluation]:
+        """Get all evaluations across all versions."""
+        evaluations = []
+        for version in self.versions:
+            evaluations.extend(version.evaluations)
+        return evaluations
+    
+    def compare_versions_by_metric(self, metric_name: str) -> list[tuple[str, Optional[float]]]:
+        """Compare all versions by a specific metric."""
+        comparisons = []
+        for version in self.versions:
+            latest_eval = version.get_latest_evaluation()
+            metric_value = latest_eval.metrics.get(metric_name) if latest_eval else None
+            if metric_value is None and version.metadata.performance_metrics:
+                metric_value = version.metadata.performance_metrics.get(metric_name)
+            comparisons.append((version.version, metric_value))
+        return comparisons

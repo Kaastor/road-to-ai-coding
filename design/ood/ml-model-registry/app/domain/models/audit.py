@@ -21,6 +21,7 @@ class AuditAction(str, Enum):
     DOWNLOAD_ARTIFACT = "download_artifact"
     DELETE_ARTIFACT = "delete_artifact"
     PROMOTE_MODEL = "promote_model"
+    CREATE_EVALUATION = "create_evaluation"
 
 
 @dataclass

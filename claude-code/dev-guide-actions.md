@@ -102,19 +102,19 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application: Phase 3: File Storage & Model Artifacts (Iteration 5-6)
+claude "Develop following part of the application: Phase 4: Enhanced Features (Iteration 7-8)
 
-  Iteration 5: File Storage
-  - Implement local file storage for model artifacts
-  - Add file upload/download endpoints
-  - Create storage abstraction layer
-  - Handle different model formats (pickle, joblib, ONNX)
+  Iteration 7: Model Comparison & Metrics
+  - Add model performance metrics storage
+  - Implement basic model comparison features
+  - Create metrics visualization endpoints
+  - Add model evaluation tracking
 
-  Iteration 6: Model Lifecycle
-  - Add model status management (draft, staging, production)
-  - Implement model promotion workflow
-  - Add model deregistration functionality
-  - Create audit logging
+  Iteration 8: Integration & Testing
+  - Add comprehensive test suite
+  - Implement integration tests with mock ML models
+  - Create sample ML model training scripts
+  - Add Docker containerization
 Create minimal tests and at the end of your work quickly summarize what you did and why and what was not accomplished if that is the case."
 ```
 
@@ -123,5 +123,5 @@ claude "Check if your changes are aligned with overall Project goals and are mov
 ```
 
 ```bash
-claude "Create 'demo' scripts to test the application to test main use cases."
+claude "Create 'demo' scripts to test the application to test main use cases. Supply descriptions of what should be achieved by use case and how to verify funcionality"
 ```

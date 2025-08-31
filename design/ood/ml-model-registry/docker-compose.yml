@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  ml-registry:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ml-model-registry
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/models.db
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DEBUG=false
+      - ARTIFACT_STORAGE_PATH=/app/artifacts
+      - MAX_ARTIFACT_SIZE_MB=100
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./artifacts:/app/artifacts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add a database service for production
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: ml-registry-db
+  #   environment:
+  #     POSTGRES_DB: ml_registry
+  #     POSTGRES_USER: ml_user
+  #     POSTGRES_PASSWORD: ml_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:

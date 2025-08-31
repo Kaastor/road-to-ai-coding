@@ -56,6 +56,7 @@ class ModelVersionResponse(BaseModel):
     metadata: ModelMetadataSchema
     created_at: datetime
     updated_at: datetime
+    evaluations: list['ModelEvaluationSchema'] = Field(default_factory=list)
     
     model_config = {"from_attributes": True, "arbitrary_types_allowed": True}
 
@@ -125,3 +126,44 @@ class PromoteModelRequest(BaseModel):
     """Request schema for promoting a model to a higher status."""
     to_status: ModelStatus = Field(..., description="Target status for promotion")
     reason: Optional[str] = Field(None, description="Reason for promotion")
+
+
+class ModelEvaluationSchema(BaseModel):
+    """Pydantic schema for ModelEvaluation."""
+    id: UUID
+    model_version_id: UUID
+    evaluation_name: str
+    dataset_name: str
+    metrics: dict[str, float]
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    created_at: datetime
+    
+    model_config = {"from_attributes": True}
+
+
+class CreateEvaluationRequest(BaseModel):
+    """Request schema for creating a new evaluation."""
+    evaluation_name: str = Field(..., min_length=1, description="Name of the evaluation")
+    dataset_name: str = Field(..., min_length=1, description="Name of the dataset used")
+    metrics: dict[str, float] = Field(..., description="Evaluation metrics")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    
+    @field_validator('evaluation_name', 'dataset_name')
+    @classmethod
+    def validate_names(cls, v):
+        if not v.strip():
+            raise ValueError('Name cannot be empty')
+        return v.strip()
+
+
+class ModelComparisonResponse(BaseModel):
+    """Response schema for model comparison."""
+    metric_name: str
+    versions: list[dict[str, Any]]  # version info with metric values
+
+
+class MetricsVisualizationResponse(BaseModel):
+    """Response schema for metrics visualization data."""
+    model_id: UUID
+    model_name: str
+    metrics_data: dict[str, Any]  # structured data for visualization

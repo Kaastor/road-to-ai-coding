@@ -12,7 +12,9 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 - Model artifact storage (local filesystem) with multi-format support
 - Model lifecycle management (draft/staging/production/archived)
 - Model promotion workflow with validation
-- Performance metrics tracking
+- Performance metrics tracking and evaluation management
+- Model comparison and visualization endpoints
+- Comprehensive evaluation tracking with audit logging
 - REST API with OpenAPI documentation
 - Advanced search capabilities (by name, description, and tags)
 - Metadata update operations for models and versions
@@ -20,6 +22,8 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 - Audit logging for all model operations
 - Comprehensive input validation and error handling
 - Clean Architecture implementation with proper separation of concerns
+- Docker containerization support
+- Sample ML training scripts and integration examples
 
 ## Build & Test Commands
 
@@ -42,6 +46,9 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 # run artifact operations tests
 `poetry run python -m pytest app/tests/test_artifact_operations.py -v`
 
+# run metrics and evaluation tests
+`poetry run python -m pytest app/tests/test_metrics_and_evaluation.py -v`
+
 ### Running the Application
 # start the development server
 `poetry run python -m app.main`
@@ -52,6 +59,23 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 ### Type Checking
 # run type checker
 `poetry run mypy app --ignore-missing-imports`
+
+### Docker Commands
+# build and run with docker-compose
+`docker-compose up --build`
+
+# run in detached mode
+`docker-compose up -d`
+
+# stop services
+`docker-compose down`
+
+### Sample Training Scripts
+# run sample model training
+`poetry run python examples/train_sample_model.py`
+
+# run hyperparameter tuning experiment
+`poetry run python examples/hyperparameter_tuning.py`
 
 ## Project Structure
 
@@ -66,13 +90,13 @@ ml-model-registry/
 │   │   ├── __init__.py
 │   │   └── routes/
 │   │       ├── __init__.py
-│   │       └── models.py           # Model and version API endpoints with full CRUD operations
+│   │       └── models.py           # Model and version API endpoints with CRUD, evaluations, metrics
 │   ├── domain/                     # Domain layer (business logic)
 │   │   ├── __init__.py
 │   │   ├── models/
 │   │   │   ├── __init__.py
-│   │   │   ├── model.py            # Core domain models (Model, ModelVersion, ModelMetadata)
-│   │   │   ├── schemas.py          # Pydantic schemas for validation/serialization
+│   │   │   ├── model.py            # Core domain models (Model, ModelVersion, ModelEvaluation, etc.)
+│   │   │   ├── schemas.py          # Pydantic schemas including evaluation and metrics schemas
 │   │   │   ├── mappers.py          # Domain to schema mapping functions
 │   │   │   └── audit.py            # Audit logging models and functionality
 │   │   └── exceptions/
@@ -92,7 +116,7 @@ ml-model-registry/
 │   │       └── storage_factory.py  # Factory for creating storage instances
 │   ├── services/                   # Application services layer
 │   │   ├── __init__.py
-│   │   └── model_service.py        # Model management business logic with search, update, file operations
+│   │   └── model_service.py        # Model management with evaluations, comparisons, metrics
 │   └── tests/                      # Test suite
 │       ├── __init__.py
 │       ├── test_domain_models.py   # Domain model unit tests
@@ -100,8 +124,15 @@ ml-model-registry/
 │       ├── test_file_storage.py    # File storage functionality tests
 │       ├── test_model_lifecycle.py # Model promotion and lifecycle tests
 │       ├── test_artifact_operations.py # Artifact upload/download/delete tests
+│       ├── test_metrics_and_evaluation.py # Evaluation and metrics testing with mock ML models
 │       └── test_app.py             # Legacy test file
+├── examples/                       # Sample ML training scripts and demonstrations
+│   ├── train_sample_model.py       # Complete training pipeline with registry integration
+│   └── hyperparameter_tuning.py    # Multi-version hyperparameter tuning experiment
 ├── .env.example                    # Environment variables example
+├── .dockerignore                   # Docker ignore file
+├── Dockerfile                      # Docker container configuration
+├── docker-compose.yml              # Docker Compose configuration with health checks
 ├── CLAUDE.md                       # This file - Project documentation and guidelines
 ├── PLAN.md                         # Project development plan
 ├── pyproject.toml                  # Poetry project configuration
@@ -137,6 +168,11 @@ ml-model-registry/
 - **mypy**: Static type checker
 - **faker**: Library for generating fake data for testing
 - **pytest-mock**: Enhanced mocking capabilities for tests
+
+#### Optional ML Dependencies (for examples)
+- **scikit-learn**: Machine learning library (used in training examples)
+- **numpy**: Numerical computing library
+- **pickle**: Python serialization (built-in)
 
 ## Code Style Guidelines
 
@@ -264,6 +300,14 @@ The application provides a RESTful API for model registry operations:
 ### Model Lifecycle
 - `POST /api/v1/models/{model_id}/versions/{version}/promote` - Promote model version to higher status
 
+### Model Evaluations
+- `POST /api/v1/models/{model_id}/versions/{version}/evaluations` - Create an evaluation for a model version
+- `GET /api/v1/models/{model_id}/versions/{version}/evaluations` - Get all evaluations for a model version
+
+### Model Comparison & Metrics
+- `GET /api/v1/models/{model_id}/compare/{metric_name}` - Compare all versions of a model by a specific metric
+- `GET /api/v1/models/{model_id}/metrics/visualization` - Get structured metrics data for visualization
+
 ### Search and Filtering
 The models listing endpoint (`GET /api/v1/models/`) supports the following query parameters:
 - `skip` - Number of records to skip for pagination (default: 0)
@@ -325,3 +369,59 @@ Key patterns implemented:
 - **Strategy Pattern**: File storage abstraction allows different storage implementations
 - **Audit Logging Pattern**: Comprehensive logging of all domain operations
 - **State Machine Pattern**: Model lifecycle with controlled status transitions
+- **Aggregate Pattern**: Model aggregates contain versions and evaluations
+- **Command Pattern**: Evaluation creation and model comparison operations
+
+## Docker Deployment
+
+The application includes Docker support for easy deployment:
+
+### Quick Start with Docker
+```bash
+# Build and run with docker-compose
+docker-compose up --build
+
+# Access the API at http://localhost:8000
+curl http://localhost:8000/health
+```
+
+### Docker Configuration
+- **Base Image**: Python 3.11-slim for optimized size
+- **Health Checks**: Built-in health monitoring
+- **Volume Mounts**: Persistent storage for artifacts and database
+- **Environment Variables**: Configurable via `.env` file
+
+### Production Deployment
+- Use environment-specific `.env` files
+- Consider PostgreSQL for production databases
+- Set up external artifact storage (AWS S3, etc.)
+- Configure proper logging and monitoring
+
+## Sample Training Integration
+
+The project includes complete ML training examples:
+
+### Basic Training Pipeline (`examples/train_sample_model.py`)
+- Creates synthetic classification dataset
+- Trains RandomForest model with scikit-learn
+- Registers model and version in registry
+- Uploads model artifact (pickle format)
+- Creates evaluation record with metrics
+
+### Hyperparameter Tuning (`examples/hyperparameter_tuning.py`)
+- Experiments with multiple hyperparameter configurations
+- Creates multiple model versions for comparison
+- Demonstrates evaluation tracking across versions
+- Shows model comparison functionality
+
+### Usage Examples
+```bash
+# Run sample training (creates model + version + evaluation)
+poetry run python examples/train_sample_model.py
+
+# Run hyperparameter tuning (creates multiple versions)
+poetry run python examples/hyperparameter_tuning.py
+
+# Compare results via API
+curl http://localhost:8000/api/v1/models/{model_id}/compare/f1_score
+```
