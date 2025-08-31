@@ -4,7 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 
 ## Project Overview
-[Description]
+A lightweight ML Model Registry Proof of Concept for managing machine learning models, their metadata, versions, and lifecycle. This REST API service allows data scientists to register, discover, and manage ML models with proper versioning and metadata tracking.
+
+### Core Features:
+- Model registration and versioning
+- Metadata management and search
+- Model artifact storage (local filesystem)
+- Model lifecycle management (draft/staging/production)
+- Performance metrics tracking
+- REST API with OpenAPI documentation
 
 ## Build & Test Commands
 
@@ -22,6 +30,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Structure
 
 ```
+
 ```
 
 ## Technical Stack
@@ -35,7 +44,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Dependencies
 
-[List of deps]
+#### Core Dependencies
+- **fastapi**: Modern, fast web framework for building APIs
+- **pydantic**: Data validation and settings management using Python type annotations
+- **sqlalchemy**: SQL toolkit and Object-Relational Mapping (ORM) library
+- **python-multipart**: Support for form data and file uploads
+- **python-dotenv**: Environment variable management from .env files
+- **uvicorn**: ASGI web server implementation for Python
+
+#### ML & Data Dependencies
+- **scikit-learn**: Machine learning library for sample models and metrics
+- **joblib**: Efficient serialization of Python objects (for model persistence)
+- **pandas**: Data manipulation and analysis library
+- **numpy**: Numerical computing library
+
+#### Development Dependencies
+- **pytest**: Testing framework
+- **pytest-asyncio**: Pytest plugin for testing asyncio code
+- **httpx**: HTTP client library for testing API endpoints
+- **black**: Code formatter
+- **mypy**: Static type checker
+- **faker**: Library for generating fake data for testing
+- **pytest-mock**: Enhanced mocking capabilities for tests
 
 ## Code Style Guidelines
 
