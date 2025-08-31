@@ -1,9 +1,9 @@
 # poetry install
 
 [tool.poetry]
-name = "training-app"
+name = "ml-model-registry"
 version = "0.1.0"
-description = "Training apps"
+description = "ML Model Registry Proof of Concept"
 authors = ["Your Name <you@example.com>"]
 
 packages = [
@@ -13,14 +13,24 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.104.0"
-uvicorn = "^0.24.0"
+pydantic = "^2.0.0"
+pydantic-settings = "^2.0.0"
+sqlalchemy = "^2.0.0"
+python-multipart = "^0.0.5"
 python-dotenv = "^1.0.0"
+uvicorn = "^0.24.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
+pytest-asyncio = "^0.21.0"
+httpx = "^0.24.0"
+black = "^23.0.0"
+mypy = "^1.5.0"
+faker = "^20.0.0"
+pytest-mock = "^3.11.0"
 
 [tool.poetry.scripts]
-elevator = "app.app:main"
+ml-registry = "app.main:main"
 
 [build-system]
 requires = ["poetry-core"]
