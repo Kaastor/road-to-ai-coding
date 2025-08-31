@@ -102,19 +102,19 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application: Phase 1: Foundation & Core Domain
+claude "Develop following part of the application: API Layer (Iteration 3-4)
 
-  Iteration 1: Project Setup & Domain Models
-  - Set up project structure with Poetry
-  - Define core domain models (Model, Version, Metadata)
-  - Implement basic data validation
-  - Add configuration management
+  Iteration 3: REST API Foundation
+  - Set up FastAPI with basic endpoints
+  - Implement model registration endpoint
+  - Add health check and basic error handling
+  - Create API documentation with OpenAPI
 
-  Iteration 2: Storage Layer
-  - Implement repository pattern for data access
-  - Create in-memory storage (SQLite for simplicity)
-  - Add basic CRUD operations
-  - Implement model serialization
+  Iteration 4: Model Management APIs
+  - Add model listing and search endpoints
+  - Implement model versioning endpoints
+  - Add metadata update capabilities
+  - Include basic input validation
 Create minimal tests and at the end of your work quickly summarize what you did and why and what was not accomplished if that is the case."
 ```
 

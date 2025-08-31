@@ -24,13 +24,66 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 `poetry run python -m pytest`
 
 # single test
-`poetry run python -m pytest app/tests/test_app.py::test_hello_name -v`
+`poetry run python -m pytest app/tests/test_domain_models.py::TestModel::test_create_model -v`
 
+### Running the Application
+# start the development server
+`poetry run python -m app.main`
+
+# or using the script entry point
+`poetry run ml-registry`
+
+### Type Checking
+# run type checker
+`poetry run mypy app --ignore-missing-imports`
 
 ## Project Structure
 
 ```
-
+ml-model-registry/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                     # FastAPI application entry point
+│   ├── config.py                   # Configuration management with Pydantic settings
+│   ├── api/                        # REST API layer
+│   │   ├── __init__.py
+│   │   └── routes/
+│   │       ├── __init__.py
+│   │       └── models.py           # Model and version API endpoints
+│   ├── domain/                     # Domain layer (business logic)
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── model.py            # Core domain models (Model, ModelVersion, ModelMetadata)
+│   │   │   ├── schemas.py          # Pydantic schemas for validation/serialization
+│   │   │   └── mappers.py          # Domain to schema mapping functions
+│   │   └── exceptions/
+│   │       ├── __init__.py
+│   │       └── exceptions.py       # Custom domain exceptions
+│   ├── infrastructure/             # Infrastructure layer
+│   │   ├── __init__.py
+│   │   ├── repositories/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py             # Abstract repository interfaces
+│   │   │   └── sqlalchemy_repositories.py  # SQLAlchemy repository implementations
+│   │   └── storage/
+│   │       ├── __init__.py
+│   │       ├── database.py         # Database configuration and session management
+│   │       └── models.py           # SQLAlchemy ORM models
+│   ├── services/                   # Application services layer
+│   │   ├── __init__.py
+│   │   └── model_service.py        # Model management business logic
+│   └── tests/                      # Test suite
+│       ├── __init__.py
+│       ├── test_domain_models.py   # Domain model unit tests
+│       ├── test_api.py             # API integration tests
+│       └── test_app.py             # Legacy test file
+├── .env.example                    # Environment variables example
+├── CLAUDE.md                       # This file
+├── PLAN.md                         # Project development plan
+├── pyproject.toml                  # Poetry project configuration
+├── pytest.ini                     # Pytest configuration
+└── poetry.lock                     # Locked dependencies
 ```
 
 ## Technical Stack
@@ -47,16 +100,11 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 #### Core Dependencies
 - **fastapi**: Modern, fast web framework for building APIs
 - **pydantic**: Data validation and settings management using Python type annotations
+- **pydantic-settings**: Settings management for Pydantic v2
 - **sqlalchemy**: SQL toolkit and Object-Relational Mapping (ORM) library
 - **python-multipart**: Support for form data and file uploads
 - **python-dotenv**: Environment variable management from .env files
 - **uvicorn**: ASGI web server implementation for Python
-
-#### ML & Data Dependencies
-- **scikit-learn**: Machine learning library for sample models and metrics
-- **joblib**: Efficient serialization of Python objects (for model persistence)
-- **pandas**: Data manipulation and analysis library
-- **numpy**: Numerical computing library
 
 #### Development Dependencies
 - **pytest**: Testing framework
@@ -159,6 +207,60 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 - **Integration Patterns**: Use RAG (Retrieval-Augmented Generation) for LLM apps; design for low-latency inference with tools like FastAPI or gRPC.
 
 ## Core Workflow
-- Be sure to typecheck when you’re done making a series of code changes
+- Be sure to typecheck when you're done making a series of code changes: `poetry run mypy app --ignore-missing-imports`
 - Prefer running single tests, and not the whole test suite, for performance
 - Review designs against scalability and modularity guidelines before committing.
+
+## API Documentation
+
+The application provides a RESTful API for model registry operations:
+
+### Health Check
+- `GET /health` - Check service health
+
+### Models
+- `POST /api/v1/models/` - Create a new model
+- `GET /api/v1/models/` - List all models (with pagination)
+- `GET /api/v1/models/{model_id}` - Get a specific model
+- `DELETE /api/v1/models/{model_id}` - Delete a model
+
+### Model Versions
+- `POST /api/v1/models/{model_id}/versions` - Create a new version for a model
+- `GET /api/v1/models/{model_id}/versions` - List all versions for a model
+- `GET /api/v1/models/{model_id}/versions/{version}` - Get a specific version
+- `PATCH /api/v1/models/{model_id}/versions/{version}/status` - Update version status
+- `GET /api/v1/models/{model_id}/versions/latest` - Get the latest version
+
+### Model Status Lifecycle
+- **draft** - Initial development status
+- **staging** - Version ready for testing
+- **production** - Version deployed to production
+- **archived** - Deprecated version
+
+## Environment Configuration
+
+Create a `.env` file based on `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Key configuration options:
+- `DATABASE_URL` - SQLite database path (default: `sqlite:///./models.db`)
+- `API_HOST` - Server host (default: `127.0.0.1`)
+- `API_PORT` - Server port (default: `8000`)
+- `DEBUG` - Enable debug mode (default: `false`)
+
+## Architecture Notes
+
+The application follows **Clean Architecture** principles with clear separation of concerns:
+
+1. **Domain Layer**: Contains business logic and domain models
+2. **Application Layer**: Contains services that orchestrate domain operations
+3. **Infrastructure Layer**: Contains database and external service integrations
+4. **API Layer**: Contains REST API endpoints and request/response handling
+
+Key patterns implemented:
+- **Repository Pattern**: Abstract data access behind interfaces
+- **Dependency Injection**: Services depend on abstractions, not concrete implementations
+- **Domain-Driven Design**: Rich domain models with business logic encapsulation
