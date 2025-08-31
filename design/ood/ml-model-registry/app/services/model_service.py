@@ -2,7 +2,13 @@ from typing import Optional
 from uuid import UUID
 
 from app.domain.models.model import Model, ModelVersion, ModelStatus
-from app.domain.models.schemas import CreateModelRequest, CreateModelVersionRequest, UpdateModelStatusRequest
+from app.domain.models.schemas import (
+    CreateModelRequest, 
+    CreateModelVersionRequest, 
+    UpdateModelStatusRequest,
+    UpdateModelRequest,
+    UpdateModelVersionMetadataRequest
+)
 from app.domain.models.model import ModelMetadata
 from app.domain.exceptions.exceptions import (
     ModelNotFoundError, 
@@ -132,3 +138,51 @@ class ModelService:
     async def search_models_by_tags(self, tags: list[str]) -> list[Model]:
         """Search models by tags."""
         return await self.model_repo.search_by_tags(tags)
+    
+    async def search_models(self, query: str, skip: int = 0, limit: int = 100) -> list[Model]:
+        """Search models by name or description."""
+        return await self.model_repo.search(query, skip=skip, limit=limit)
+    
+    async def update_model(self, model_id: UUID, request: UpdateModelRequest) -> Model:
+        """Update a model's basic information."""
+        model = await self.model_repo.get_by_id(model_id)
+        if not model:
+            raise ModelNotFoundError(model_id)
+        
+        if request.name is not None:
+            existing_model = await self.model_repo.get_by_name(request.name)
+            if existing_model and existing_model.id != model_id:
+                raise DuplicateModelError(request.name)
+            model.name = request.name
+            
+        if request.description is not None:
+            model.description = request.description
+        
+        model.update_timestamp()
+        return await self.model_repo.update(model)
+    
+    async def update_version_metadata(
+        self, 
+        model_id: UUID, 
+        version: str, 
+        request: UpdateModelVersionMetadataRequest
+    ) -> ModelVersion:
+        """Update model version metadata."""
+        model_version = await self.version_repo.get_by_model_and_version(model_id, version)
+        if not model_version:
+            raise ModelVersionNotFoundError(model_id, version)
+        
+        # Update metadata
+        model_version.metadata = ModelMetadata(
+            author=request.metadata.author,
+            description=request.metadata.description,
+            tags=request.metadata.tags,
+            framework=request.metadata.framework,
+            algorithm=request.metadata.algorithm,
+            dataset_name=request.metadata.dataset_name,
+            hyperparameters=request.metadata.hyperparameters,
+            performance_metrics=request.metadata.performance_metrics
+        )
+        
+        model_version.update_timestamp()
+        return await self.version_repo.update(model_version)

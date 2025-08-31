@@ -91,6 +91,16 @@ class SQLAlchemyModelRepository(ModelRepository):
         
         return [self._to_domain_model(db_model) for db_model in db_models]
     
+    async def search(self, query: str, skip: int = 0, limit: int = 100) -> list[Model]:
+        """Search models by name or description."""
+        db_models = self.session.query(ModelTable).options(
+            joinedload(ModelTable.versions)
+        ).filter(
+            ModelTable.name.contains(query) | ModelTable.description.contains(query)
+        ).offset(skip).limit(limit).all()
+        
+        return [self._to_domain_model(db_model) for db_model in db_models]
+    
     def _to_domain_model(self, db_model: ModelTable) -> Model:
         """Convert SQLAlchemy model to domain model."""
         domain_model = Model(

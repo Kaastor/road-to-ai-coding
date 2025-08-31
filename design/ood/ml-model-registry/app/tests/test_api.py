@@ -180,3 +180,65 @@ class TestModelAPI:
         assert isinstance(data, list)
         assert len(data) == 1
         assert data[0]["version"] == "v1.0.0"
+    
+    def test_search_models(self, client):
+        """Test searching models."""
+        # Create a couple of models
+        model_data_1 = {"name": "search-test-model", "description": "A model for testing search"}
+        model_data_2 = {"name": "another-model", "description": "Another model with different content"}
+        
+        client.post("/api/v1/models/", json=model_data_1)
+        client.post("/api/v1/models/", json=model_data_2)
+        
+        # Search by name
+        response = client.get("/api/v1/models/?search=search-test")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) >= 1
+        assert any(model["name"] == "search-test-model" for model in data)
+        
+        # Search by description
+        response = client.get("/api/v1/models/?search=testing search")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) >= 1
+    
+    def test_update_model_metadata(self, client):
+        """Test updating model metadata."""
+        # Create model and version
+        model_data = {"name": "update-test-model", "description": "Test model for updating"}
+        create_response = client.post("/api/v1/models/", json=model_data)
+        model_id = create_response.json()["id"]
+        
+        version_data = {
+            "version": "v1.0.0",
+            "metadata": {"author": "original-author", "framework": "scikit-learn"}
+        }
+        client.post(f"/api/v1/models/{model_id}/versions", json=version_data)
+        
+        # Update model basic info
+        update_data = {"name": "updated-model-name", "description": "Updated description"}
+        response = client.patch(f"/api/v1/models/{model_id}", json=update_data)
+        assert response.status_code == 200
+        
+        data = response.json()
+        assert data["name"] == "updated-model-name"
+        assert data["description"] == "Updated description"
+        
+        # Update version metadata
+        metadata_update = {
+            "metadata": {
+                "author": "updated-author",
+                "framework": "pytorch", 
+                "tags": ["updated", "test"],
+                "performance_metrics": {"accuracy": 0.98}
+            }
+        }
+        response = client.patch(f"/api/v1/models/{model_id}/versions/v1.0.0/metadata", json=metadata_update)
+        assert response.status_code == 200
+        
+        data = response.json()
+        assert data["metadata"]["author"] == "updated-author"
+        assert data["metadata"]["framework"] == "pytorch"
+        assert "updated" in data["metadata"]["tags"]
+        assert data["metadata"]["performance_metrics"]["accuracy"] == 0.98

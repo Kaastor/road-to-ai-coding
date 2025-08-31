@@ -7,6 +7,8 @@ from app.domain.models.schemas import (
     CreateModelRequest,
     CreateModelVersionRequest,
     UpdateModelStatusRequest,
+    UpdateModelRequest,
+    UpdateModelVersionMetadataRequest,
     ModelResponse,
     ModelVersionResponse
 )
@@ -53,11 +55,22 @@ async def create_model(
 async def list_models(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
+    search: Optional[str] = Query(None, description="Search models by name or description"),
+    tags: Optional[str] = Query(None, description="Comma-separated list of tags to filter by"),
     service: ModelService = Depends(get_model_service)
 ):
-    """List all models with pagination."""
+    """List all models with pagination and optional search/filtering."""
     try:
-        models = await service.list_models(skip=skip, limit=limit)
+        if tags:
+            tag_list = [tag.strip() for tag in tags.split(',')]
+            models = await service.search_models_by_tags(tag_list)
+            # Apply pagination to search results
+            models = models[skip:skip + limit]
+        elif search:
+            # For now, delegate search to service layer
+            models = await service.search_models(search, skip=skip, limit=limit)
+        else:
+            models = await service.list_models(skip=skip, limit=limit)
         return [model_to_response(model) for model in models]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -90,6 +103,24 @@ async def delete_model(
             raise HTTPException(status_code=404, detail="Model not found")
     except ModelNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.patch("/{model_id}", response_model=ModelResponse)
+async def update_model(
+    model_id: UUID,
+    request: UpdateModelRequest,
+    service: ModelService = Depends(get_model_service)
+):
+    """Update a model's basic information."""
+    try:
+        updated_model = await service.update_model(model_id, request)
+        return model_to_response(updated_model)
+    except ModelNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except DuplicateModelError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -172,6 +203,23 @@ async def get_latest_version(
             return model_version_to_response(latest_version)
         return None
     except ModelNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.patch("/{model_id}/versions/{version}/metadata", response_model=ModelVersionResponse)
+async def update_version_metadata(
+    model_id: UUID,
+    version: str,
+    request: UpdateModelVersionMetadataRequest,
+    service: ModelService = Depends(get_model_service)
+):
+    """Update the metadata of a model version."""
+    try:
+        updated_version = await service.update_version_metadata(model_id, version, request)
+        return model_version_to_response(updated_version)
+    except ModelVersionNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

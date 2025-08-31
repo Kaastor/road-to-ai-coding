@@ -87,3 +87,21 @@ class ModelResponse(BaseModel):
 class UpdateModelStatusRequest(BaseModel):
     """Request schema for updating model version status."""
     status: ModelStatus = Field(..., description="New status")
+
+
+class UpdateModelRequest(BaseModel):
+    """Request schema for updating a model."""
+    name: Optional[str] = Field(None, min_length=1, description="Model name")
+    description: Optional[str] = Field(None, description="Model description")
+    
+    @field_validator('name')
+    @classmethod
+    def name_must_not_be_empty(cls, v):
+        if v is not None and not v.strip():
+            raise ValueError('Model name cannot be empty')
+        return v.strip() if v is not None else v
+
+
+class UpdateModelVersionMetadataRequest(BaseModel):
+    """Request schema for updating model version metadata."""
+    metadata: ModelMetadataSchema = Field(..., description="Updated metadata")

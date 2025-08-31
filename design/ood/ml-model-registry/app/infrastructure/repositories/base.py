@@ -48,6 +48,11 @@ class ModelRepository(Repository[Model]):
     async def search_by_tags(self, tags: list[str]) -> list[Model]:
         """Search models by tags."""
         pass
+    
+    @abstractmethod
+    async def search(self, query: str, skip: int = 0, limit: int = 100) -> list[Model]:
+        """Search models by name or description."""
+        pass
 
 
 class ModelVersionRepository(Repository[ModelVersion]):

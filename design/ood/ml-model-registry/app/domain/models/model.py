@@ -68,6 +68,10 @@ class ModelVersion:
         """Update the status of the model version."""
         self.status = status
         self.updated_at = datetime.utcnow()
+    
+    def update_timestamp(self) -> None:
+        """Update the updated_at timestamp."""
+        self.updated_at = datetime.utcnow()
 
 
 @dataclass
@@ -122,3 +126,7 @@ class Model:
             (v for v in self.versions if v.status == ModelStatus.PRODUCTION),
             None
         )
+    
+    def update_timestamp(self) -> None:
+        """Update the updated_at timestamp."""
+        self.updated_at = datetime.utcnow()

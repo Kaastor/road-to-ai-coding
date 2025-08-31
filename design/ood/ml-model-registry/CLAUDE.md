@@ -10,9 +10,13 @@ A lightweight ML Model Registry Proof of Concept for managing machine learning m
 - Model registration and versioning
 - Metadata management and search
 - Model artifact storage (local filesystem)
-- Model lifecycle management (draft/staging/production)
+- Model lifecycle management (draft/staging/production/archived)
 - Performance metrics tracking
 - REST API with OpenAPI documentation
+- Advanced search capabilities (by name, description, and tags)
+- Metadata update operations for models and versions
+- Comprehensive input validation and error handling
+- Clean Architecture implementation with proper separation of concerns
 
 ## Build & Test Commands
 
@@ -45,11 +49,12 @@ ml-model-registry/
 │   ├── __init__.py
 │   ├── main.py                     # FastAPI application entry point
 │   ├── config.py                   # Configuration management with Pydantic settings
+│   ├── app.py                      # Legacy application file
 │   ├── api/                        # REST API layer
 │   │   ├── __init__.py
 │   │   └── routes/
 │   │       ├── __init__.py
-│   │       └── models.py           # Model and version API endpoints
+│   │       └── models.py           # Model and version API endpoints with full CRUD operations
 │   ├── domain/                     # Domain layer (business logic)
 │   │   ├── __init__.py
 │   │   ├── models/
@@ -72,14 +77,14 @@ ml-model-registry/
 │   │       └── models.py           # SQLAlchemy ORM models
 │   ├── services/                   # Application services layer
 │   │   ├── __init__.py
-│   │   └── model_service.py        # Model management business logic
+│   │   └── model_service.py        # Model management business logic with search and update operations
 │   └── tests/                      # Test suite
 │       ├── __init__.py
 │       ├── test_domain_models.py   # Domain model unit tests
-│       ├── test_api.py             # API integration tests
+│       ├── test_api.py             # Comprehensive API integration tests
 │       └── test_app.py             # Legacy test file
 ├── .env.example                    # Environment variables example
-├── CLAUDE.md                       # This file
+├── CLAUDE.md                       # This file - Project documentation and guidelines
 ├── PLAN.md                         # Project development plan
 ├── pyproject.toml                  # Poetry project configuration
 ├── pytest.ini                     # Pytest configuration
@@ -220,8 +225,9 @@ The application provides a RESTful API for model registry operations:
 
 ### Models
 - `POST /api/v1/models/` - Create a new model
-- `GET /api/v1/models/` - List all models (with pagination)
+- `GET /api/v1/models/` - List all models (with pagination, search, and tag filtering)
 - `GET /api/v1/models/{model_id}` - Get a specific model
+- `PATCH /api/v1/models/{model_id}` - Update model basic information (name, description)
 - `DELETE /api/v1/models/{model_id}` - Delete a model
 
 ### Model Versions
@@ -229,7 +235,15 @@ The application provides a RESTful API for model registry operations:
 - `GET /api/v1/models/{model_id}/versions` - List all versions for a model
 - `GET /api/v1/models/{model_id}/versions/{version}` - Get a specific version
 - `PATCH /api/v1/models/{model_id}/versions/{version}/status` - Update version status
+- `PATCH /api/v1/models/{model_id}/versions/{version}/metadata` - Update version metadata
 - `GET /api/v1/models/{model_id}/versions/latest` - Get the latest version
+
+### Search and Filtering
+The models listing endpoint (`GET /api/v1/models/`) supports the following query parameters:
+- `skip` - Number of records to skip for pagination (default: 0)
+- `limit` - Maximum number of records to return (default: 100, max: 1000)
+- `search` - Search models by name or description
+- `tags` - Comma-separated list of tags to filter models by
 
 ### Model Status Lifecycle
 - **draft** - Initial development status
