@@ -180,7 +180,7 @@ async def get_model_version(
     """Get a specific version of a model."""
     try:
         model_version = await service.get_model_version(model_id, version)
-        return ModelVersionResponse.from_orm(model_version)
+        return model_version_to_response(model_version)
     except ModelVersionNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
@@ -197,7 +197,7 @@ async def update_version_status(
     """Update the status of a model version."""
     try:
         updated_version = await service.update_version_status(model_id, version, request)
-        return ModelVersionResponse.from_orm(updated_version)
+        return model_version_to_response(updated_version)
     except ModelVersionNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

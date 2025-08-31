@@ -3,10 +3,10 @@ from uuid import UUID
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import and_
 
-from app.domain.models.model import Model, ModelVersion, ModelMetadata, ModelStatus
+from app.domain.models.model import Model, ModelVersion, ModelMetadata, ModelStatus, ModelEvaluation
 from app.domain.exceptions.exceptions import ModelNotFoundError, ModelVersionNotFoundError
 from app.infrastructure.repositories.base import ModelRepository, ModelVersionRepository
-from app.infrastructure.storage.models import ModelTable, ModelVersionTable
+from app.infrastructure.storage.models import ModelTable, ModelVersionTable, ModelEvaluationTable
 
 
 class SQLAlchemyModelRepository(ModelRepository):
@@ -131,7 +131,21 @@ class SQLAlchemyModelRepository(ModelRepository):
             performance_metrics=db_version.performance_metrics or {}
         )
         
-        return ModelVersion(
+        # Convert evaluations
+        evaluations = []
+        for db_evaluation in db_version.evaluations:
+            evaluation = ModelEvaluation(
+                id=db_evaluation.id,
+                model_version_id=db_evaluation.model_version_id,
+                evaluation_name=db_evaluation.evaluation_name,
+                dataset_name=db_evaluation.dataset_name,
+                metrics=db_evaluation.metrics,
+                metadata=db_evaluation.evaluation_metadata or {},
+                created_at=db_evaluation.created_at
+            )
+            evaluations.append(evaluation)
+        
+        domain_version = ModelVersion(
             id=db_version.id,
             model_id=db_version.model_id,
             version=db_version.version,
@@ -139,8 +153,11 @@ class SQLAlchemyModelRepository(ModelRepository):
             artifact_path=db_version.artifact_path,
             metadata=metadata,
             created_at=db_version.created_at,
-            updated_at=db_version.updated_at
+            updated_at=db_version.updated_at,
+            evaluations=evaluations
         )
+        
+        return domain_version
 
 
 class SQLAlchemyModelVersionRepository(ModelVersionRepository):
@@ -216,6 +233,24 @@ class SQLAlchemyModelVersionRepository(ModelVersionRepository):
         db_version.performance_metrics = entity.metadata.performance_metrics
         db_version.updated_at = entity.updated_at
         
+        # Handle evaluations - delete existing and add new ones
+        # Clear existing evaluations
+        for existing_eval in db_version.evaluations:
+            self.session.delete(existing_eval)
+        
+        # Add current evaluations
+        for evaluation in entity.evaluations:
+            db_evaluation = ModelEvaluationTable(
+                id=evaluation.id,
+                model_version_id=evaluation.model_version_id,
+                evaluation_name=evaluation.evaluation_name,
+                dataset_name=evaluation.dataset_name,
+                metrics=evaluation.metrics,
+                evaluation_metadata=evaluation.metadata,
+                created_at=evaluation.created_at
+            )
+            self.session.add(db_evaluation)
+        
         self.session.commit()
         self.session.refresh(db_version)
         return self._to_domain_version(db_version)
@@ -281,7 +316,21 @@ class SQLAlchemyModelVersionRepository(ModelVersionRepository):
             performance_metrics=db_version.performance_metrics or {}
         )
         
-        return ModelVersion(
+        # Convert evaluations
+        evaluations = []
+        for db_evaluation in db_version.evaluations:
+            evaluation = ModelEvaluation(
+                id=db_evaluation.id,
+                model_version_id=db_evaluation.model_version_id,
+                evaluation_name=db_evaluation.evaluation_name,
+                dataset_name=db_evaluation.dataset_name,
+                metrics=db_evaluation.metrics,
+                metadata=db_evaluation.evaluation_metadata or {},
+                created_at=db_evaluation.created_at
+            )
+            evaluations.append(evaluation)
+        
+        domain_version = ModelVersion(
             id=db_version.id,
             model_id=db_version.model_id,
             version=db_version.version,
@@ -289,5 +338,8 @@ class SQLAlchemyModelVersionRepository(ModelVersionRepository):
             artifact_path=db_version.artifact_path,
             metadata=metadata,
             created_at=db_version.created_at,
-            updated_at=db_version.updated_at
+            updated_at=db_version.updated_at,
+            evaluations=evaluations
         )
+        
+        return domain_version

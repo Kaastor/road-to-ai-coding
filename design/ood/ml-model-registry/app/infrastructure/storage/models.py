@@ -86,3 +86,19 @@ class ModelVersionTable(Base):
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     model = relationship("ModelTable", back_populates="versions")
+    evaluations = relationship("ModelEvaluationTable", back_populates="model_version", cascade="all, delete-orphan")
+
+
+class ModelEvaluationTable(Base):
+    """SQLAlchemy model for ModelEvaluation entity."""
+    __tablename__ = "model_evaluations"
+
+    id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    model_version_id = Column(GUID(), ForeignKey("model_versions.id"), nullable=False, index=True)
+    evaluation_name = Column(String(255), nullable=False, index=True)
+    dataset_name = Column(String(255), nullable=False)
+    metrics = Column(JSONType, nullable=False)
+    evaluation_metadata = Column(JSONType, nullable=False, default=dict)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    model_version = relationship("ModelVersionTable", back_populates="evaluations")
