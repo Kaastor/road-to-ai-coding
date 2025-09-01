@@ -102,19 +102,13 @@ claude "Update @CLAUDE.md with current project folder structure, any new command
 ```
 
 ```bash
-claude "Develop following part of the application: Phase 4: Enhanced Features (Iteration 7-8)
+claude "Develop following part of the application:
+ Phase 2: Testing Foundation (Step 7)
 
-  Iteration 7: Model Comparison & Metrics
-  - Add model performance metrics storage
-  - Implement basic model comparison features
-  - Create metrics visualization endpoints
-  - Add model evaluation tracking
-
-  Iteration 8: Integration & Testing
-  - Add comprehensive test suite
-  - Implement integration tests with mock ML models
-  - Create sample ML model training scripts
-  - Add Docker containerization
+  Create comprehensive test suite using examples from CLAUDE.md:
+  - Valid examples: III, CV, DCXLVIII, MMDXLIX, MCMXLIV, MCMXCIX
+  - Invalid examples: IIII, VV, IC, CDCD, IL
+  - Edge cases and boundary conditions
 Create minimal tests and at the end of your work quickly summarize what you did and why and what was not accomplished if that is the case."
 ```
 
