@@ -1,0 +1,1 @@
+"""Command Pattern implementation for text editor with undo/redo functionality."""
